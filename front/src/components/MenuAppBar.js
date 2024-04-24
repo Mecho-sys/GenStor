@@ -7,9 +7,6 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Drawer from "@mui/material/Drawer";
@@ -37,15 +34,10 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function MenuAppBar() {
-  const [auth, setAuth] = React.useState(true);
+  const [auth, setAuth] = React.useState("Login");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
-
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -69,18 +61,6 @@ export default function MenuAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={auth}
-              onChange={handleChange}
-              aria-label="login switch"
-            />
-          }
-          label={auth ? "Logout" : "Login"}
-        />
-      </FormGroup>
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -139,7 +119,7 @@ export default function MenuAppBar() {
               </ListItemIcon>
               <ListItemText primary="Inicio" />
             </ListItem>
-            <ListItem button component={Link} to="/transTest">
+            <ListItem button component={Link} to="/editor">
               <ListItemIcon>
                 <ListIcon />
               </ListItemIcon>
@@ -176,7 +156,6 @@ export default function MenuAppBar() {
           >
             <Item>Nombre Usuario</Item>
             <Item>Email</Item>
-            <Item>Item 3</Item>
           </Stack>
         </Stack>
         <Box sx={{ p: 2 }}></Box>
