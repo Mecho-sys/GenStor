@@ -4,12 +4,12 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Root from "./Root";
+import Root2 from "./Root2";
 import ErrorPage from "./ErrorPage";
 import App from "./App";
-import Home from "./components/Home";
-import LoginComp from "./components/LoginComp";
+import Home from "./components/home/Home";
+import LoginComp from "./components/login/LoginComp";
 import TransformTest from "./components/Transform";
-import CustomComponent from "./components/Whiteboard";
 
 const router = createBrowserRouter([
   {
@@ -22,20 +22,23 @@ const router = createBrowserRouter([
         element: <App />,
       },
       {
-        path: "/home",
-        element: <Home />,
-      },
-      {
         path: "/login",
         element: <LoginComp />,
       },
       {
-        path: "/transTest",
+        path: "/editor",
         element: <TransformTest />,
       },
+    ],
+  },
+  {
+    path: "/",
+    element: <Root2 />,
+    errorElement: <ErrorPage />,
+    children: [
       {
-        path: "/whiteBoard",
-        element: <CustomComponent />,
+        path: "/home",
+        element: <Home />,
       },
     ],
   },
