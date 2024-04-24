@@ -21,6 +21,23 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
+import { CardActionArea } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  color: theme.palette.text.secondary,
+}));
 
 const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
   const shapeRef = React.useRef();
@@ -397,10 +414,335 @@ const TransformTest = () => {
   return (
     <div style={{ display: "flex", height: "100vh" }}>
       <div>
-        <button onClick={addRectangle}>Agregar rect</button>
-        <button onClick={addCircle}>Agregar Circle</button>
-        <button onClick={addLine}>Agregar Línea</button>
-        <button onClick={addLinePunt}>Agregar Línea Punteada</button>
+        <Typography gutterBottom variant="h5" component="div">
+          Personas
+        </Typography>
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={0.5}>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addRectangle}>
+                  <CardMedia
+                    component="img"
+                    height="100"
+                    image="/assets/Man.JPG"
+                    alt="Hombre"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Hombre
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addCircle}>
+                  <CardMedia
+                    component="img"
+                    height="100"
+                    image="/assets/Woman.JPG"
+                    alt="Mujer"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Mujer
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addCircle}>
+                  <CardMedia
+                    component="img"
+                    height="100"
+                    image="/assets/ManDead.JPG"
+                    alt="Hombre Difunto"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Hombre Difunto
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addCircle}>
+                  <CardMedia
+                    component="img"
+                    height="100"
+                    image="/assets/WomanDead.JPG"
+                    alt="Mujer Difunta"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Mujer Difunta
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addRectangle}>
+                  <CardMedia
+                    component="img"
+                    height="100"
+                    image="/assets/MId.JPG"
+                    alt="Hombre Identificado"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Hombre Identificado
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addCircle}>
+                  <CardMedia
+                    component="img"
+                    height="100"
+                    image="/assets/WId.JPG"
+                    alt="Mujer Identificada"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Mujer Identificada
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addCircle}>
+                  <CardMedia
+                    component="img"
+                    height="100"
+                    image="/assets/AbEsp.JPG"
+                    alt="Aborto Espontaneo"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Aborto Espontaneo
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addCircle}>
+                  <CardMedia
+                    component="img"
+                    height="100"
+                    image="/assets/AbProv.JPG"
+                    alt="Aborto Provocado"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Aborto Provocado
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+          </Grid>
+        </Box>
+
+        <Typography gutterBottom variant="h5" component="div">
+          Uniones
+        </Typography>
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={0.5}>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addLine}>
+                  <CardMedia
+                    component="img"
+                    height="10"
+                    image="/assets/LCont.JPG"
+                    alt="Línea Continua"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Sanguinea
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addLinePunt}>
+                  <CardMedia
+                    component="img"
+                    height="10"
+                    image="/assets/LPunt.JPG"
+                    alt="Línea punteada"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Politica
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addLine}>
+                  <CardMedia
+                    component="img"
+                    height="10"
+                    image="/assets/Sep.JPG"
+                    alt="Separacion"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Separación
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addLinePunt}>
+                  <CardMedia
+                    component="img"
+                    height="10"
+                    image="/assets/Div.JPG"
+                    alt="Línea punteada"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Divorcio
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+          </Grid>
+        </Box>
+
+        <Typography gutterBottom variant="h5" component="div">
+          Relaciones
+        </Typography>
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={0.5}>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addLinePunt}>
+                  <CardMedia
+                    component="img"
+                    height="10"
+                    image="/assets/union.JPG"
+                    alt="Unión"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Unión
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addLinePunt}>
+                  <CardMedia
+                    component="img"
+                    height="30"
+                    image="/assets/Fusion.JPG"
+                    alt="Fusion"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Fusion
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addLinePunt}>
+                  <CardMedia
+                    component="img"
+                    height="10"
+                    image="/assets/conflict.JPG"
+                    alt="conflicto"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Conflicto
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addLinePunt}>
+                  <CardMedia
+                    component="img"
+                    height="10"
+                    image="/assets/Dist.JPG"
+                    alt="Distancia"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Distancia
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addLinePunt}>
+                  <CardMedia
+                    component="img"
+                    height="10"
+                    image="/assets/Rup.JPG"
+                    alt="Quiebre"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Quiebre
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Card sx={{ maxWidth: 100 }}>
+                <CardActionArea onClick={addLinePunt}>
+                  <CardMedia
+                    component="img"
+                    height="10"
+                    image="/assets/FusConfl.JPG"
+                    alt="Fusion-Conficto"
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      Fusion-Conflicto
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+          </Grid>
+        </Box>
       </div>
       <div>
         <button onClick={handleClickOpen}>Agregar Texto</button>
