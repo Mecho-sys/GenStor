@@ -22,10 +22,6 @@ const router = createBrowserRouter([
         element: <App />,
       },
       {
-        path: "/login",
-        element: <LoginComp />,
-      },
-      {
         path: "/editor",
         element: <TransformTest />,
       },
@@ -41,6 +37,11 @@ const router = createBrowserRouter([
         element: <Home />,
       },
     ],
+  },
+
+  {
+    path: "/login",
+    element: <LoginComp />,
   },
 ]);
 
