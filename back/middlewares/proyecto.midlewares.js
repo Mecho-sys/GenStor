@@ -1,9 +1,7 @@
-import { checkProyectToCreate } from "../controllers/proyecto.controllers";
+import { checkProyectToCreate } from "../controllers/proyecto.controllers.js";
 
-async function addProyect(req, res, next) {
+export default async function addProyect(req, res, next) {
   const proyect = req.body;
   console.log("Proyecto", proyect);
   await checkProyectToCreate(proyect, res);
 }
-
-export { addProyect };

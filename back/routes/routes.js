@@ -1,14 +1,16 @@
-import express from "express";
-import { addProyect } from "../middlewares/proyecto.midlewares";
+import addProyect from "../middlewares/proyecto.midlewares.js"
 
-const router = express.Router();
+export default function routes(app){
+  app.get("/", (req, res) => {
+    res.send("Hello World!");
+  });
 
-router.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+  app.get("/test", (req, res) => {
+    res.send("PUTAMADRESIIIIIIIIIIII");
+  });
 
-router.post("/addProyect", async (req, res) => {
-  return addProyect(req, res);
-});
+  app.post("/addProyect", async (req, res) => {
+    return addProyect(req, res);
+  });
 
-export default router;
+}

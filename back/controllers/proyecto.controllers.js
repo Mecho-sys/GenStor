@@ -1,4 +1,4 @@
-import { createProyect } from "../models/proyecto.models";
+import { createProyect } from "../models/proyecto.models.js";
 
 async function checkProyectToCreate(proyect, res) {
   try {

@@ -1,4 +1,4 @@
-import supabase from "../data-base/db_client.js";
+import supabase from "../data-base/supabase.js";
 
 const ENTITY_NAME = "proyecto";
 
