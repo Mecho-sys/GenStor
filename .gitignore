@@ -5,6 +5,9 @@ front/node_modules
 front/.pnp
 front.pnp.js
 front/package-lock.json
+back/node_modules
+back/.env
+back/package-lock.json
 
 # testing
 /coverage
