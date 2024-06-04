@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 //imports de Mui
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -13,23 +14,46 @@ import EditIcon from "@mui/icons-material/Edit";
 import LoginIcon from "@mui/icons-material/Login";
 
 export default function GenGallery() {
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/getProyects");
+        setProjects(response.data.data);
+      } catch (error) {
+        console.error("Error al obtener los proyectos:", error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={1}>
-        {itemData.map((item) => (
-          <Grid item xs={4}>
+        {projects.map((project) => (
+          <Grid item xs={4} key={project.id}>
+            {" "}
             <Card sx={{ display: "flex" }}>
               <Box sx={{ display: "flex", flexDirection: "column" }}>
                 <CardContent sx={{ flex: "1 0 auto" }}>
                   <Typography component="div" variant="h5">
-                    {item.title}
+                    {project.name}
                   </Typography>
                   <Typography
                     variant="subtitle1"
                     color="text.secondary"
                     component="div"
                   >
-                    Creado: {item.date}
+                    Jefe de Familia: {project.fam_shift}
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    color="text.secondary"
+                    component="div"
+                  >
+                    Doctor: {project.doctor}
                   </Typography>
                 </CardContent>
                 <Box
@@ -49,7 +73,7 @@ export default function GenGallery() {
               <CardMedia
                 component="img"
                 sx={{ width: 151 }}
-                image={`${item.img}`}
+                image="/assets/placeholders/hogar.JPG"
                 alt="Imagen del genograma"
               />
             </Card>
@@ -59,21 +83,3 @@ export default function GenGallery() {
     </Box>
   );
 }
-
-const itemData = [
-  {
-    img: "/assets/placeholders/hogar.JPG",
-    title: "Familia Rojas Zamorano",
-    date: "2 febrero 2024",
-  },
-  {
-    img: "/assets/placeholders/genComplex.JPG",
-    title: "Familia Rojas Cruz",
-    date: "6 febrero 2024",
-  },
-  {
-    img: "/assets/placeholders/familia.JPG",
-    title: "Familia Moya Chamorro",
-    date: "6 marzo 2024",
-  },
-];

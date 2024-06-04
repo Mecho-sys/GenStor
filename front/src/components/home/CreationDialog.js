@@ -38,13 +38,11 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
     name: "",
     fam_shift: "",
     doctor: "",
-    cod_familia: "",
+    fam_code: "",
   });
 
-  // Estado para personas dentro del núcleo
-  const [personasNucleo, setPersonasNucleo] = useState([]);
-  // Estado para personas fuera del núcleo
-  const [personasFueraNucleo, setPersonasFueraNucleo] = useState([]);
+  const [personas_nucleo, setPersonasNucleo] = useState([]);
+  const [personas_fuera_nucleo, setPersonasFueraNucleo] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,7 +55,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
 
   const handleAddPerson = () => {
     setPersonasNucleo([
-      ...personasNucleo,
+      ...personas_nucleo,
       {
         rut: "",
         nombres: "",
@@ -73,7 +71,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
 
   const handleAddPersonOutside = () => {
     setPersonasFueraNucleo([
-      ...personasFueraNucleo,
+      ...personas_fuera_nucleo,
       {
         rut: "",
         nombres: "",
@@ -89,11 +87,11 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
 
   const handleRemovePerson = (index, nucleo) => {
     if (nucleo === "si") {
-      const updatedPersonas = [...personasNucleo];
+      const updatedPersonas = [...personas_nucleo];
       updatedPersonas.splice(index, 1);
       setPersonasNucleo(updatedPersonas);
     } else {
-      const updatedPersonas = [...personasFueraNucleo];
+      const updatedPersonas = [...personas_fuera_nucleo];
       updatedPersonas.splice(index, 1);
       setPersonasFueraNucleo(updatedPersonas);
     }
@@ -102,11 +100,11 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
   const handleChangePerson = (index, nucleo, e) => {
     const { name, value } = e.target;
     if (nucleo === "si") {
-      const updatedPersonas = [...personasNucleo];
+      const updatedPersonas = [...personas_nucleo];
       updatedPersonas[index][name] = value;
       setPersonasNucleo(updatedPersonas);
     } else {
-      const updatedPersonas = [...personasFueraNucleo];
+      const updatedPersonas = [...personas_fuera_nucleo];
       updatedPersonas[index][name] = value;
       setPersonasFueraNucleo(updatedPersonas);
     }
@@ -114,11 +112,11 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
 
   const handleChangePersonSelect = (index, nucleo, fieldName, value) => {
     if (nucleo === "si") {
-      const updatedPersonas = [...personasNucleo];
+      const updatedPersonas = [...personas_nucleo];
       updatedPersonas[index][fieldName] = value;
       setPersonasNucleo(updatedPersonas);
     } else {
-      const updatedPersonas = [...personasFueraNucleo];
+      const updatedPersonas = [...personas_fuera_nucleo];
       updatedPersonas[index][fieldName] = value;
       setPersonasFueraNucleo(updatedPersonas);
     }
@@ -128,11 +126,14 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
     try {
       const dataToSubmit = {
         ...formData,
-        personasNucleo,
-        personasFueraNucleo,
+        personas_nucleo,
+        personas_fuera_nucleo,
       };
 
-      const response = await axios.post("/api/addProyect", dataToSubmit);
+      const response = await axios.post(
+        "http://localhost:4000/addProyect",
+        dataToSubmit
+      );
 
       console.log("Respuesta del servidor:", response.data);
       console.log("Se pasó del diálogo al editor");
@@ -229,7 +230,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                 </IconButton>
               </Grid>
             </Grid>
-            {personasNucleo.map((persona, index) => (
+            {personas_nucleo.map((persona, index) => (
               <Accordion key={index}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
@@ -340,11 +341,16 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                           <MenuItem value={"Jefe de familia"}>
                             Jefe de familia
                           </MenuItem>
-                          <MenuItem value={"Abuelo/a"}>Abuelo/a</MenuItem>
+                          <MenuItem value={"Marido"}>Marido</MenuItem>
+                          <MenuItem value={"Esposa"}>Esposa</MenuItem>
+                          <MenuItem value={"Abuelo"}>Abuelo</MenuItem>
+                          <MenuItem value={"Abuela"}>Abuela</MenuItem>
                           <MenuItem value={"Padre"}>Padre</MenuItem>
                           <MenuItem value={"Madre"}>Madre</MenuItem>
-                          <MenuItem value={"Hijo/a"}>Hijo/a</MenuItem>
-                          <MenuItem value={"Nieto/a"}>Nieto/a</MenuItem>
+                          <MenuItem value={"Hijo"}>Hijo</MenuItem>
+                          <MenuItem value={"Hija"}>Hija</MenuItem>
+                          <MenuItem value={"Nieto"}>Nieto</MenuItem>
+                          <MenuItem value={"Nieta"}>Nieta</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
@@ -367,9 +373,11 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                           }
                           label="Estado Civil"
                         >
-                          <MenuItem value={"Soltero/a"}>Soltero/a</MenuItem>
-                          <MenuItem value={"Casado/a"}>Casado/a</MenuItem>
-                          <MenuItem value={"Viudo/a"}>Viudo/a</MenuItem>
+                          <MenuItem value={"Soltero"}>Soltero</MenuItem>
+                          <MenuItem value={"Casado"}>Casado</MenuItem>
+                          <MenuItem value={"Separado"}>Separado</MenuItem>
+                          <MenuItem value={"Divorciado"}>Divorciado</MenuItem>
+                          <MenuItem value={"Viudo"}>Viudo</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
@@ -402,7 +410,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                 </IconButton>
               </Grid>
             </Grid>
-            {personasFueraNucleo.map((persona, index) => (
+            {personas_fuera_nucleo.map((persona, index) => (
               <Accordion key={index}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
@@ -513,11 +521,16 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                           <MenuItem value={"Jefe de familia"}>
                             Jefe de familia
                           </MenuItem>
-                          <MenuItem value={"Abuelo/a"}>Abuelo/a</MenuItem>
+                          <MenuItem value={"Marido"}>Marido</MenuItem>
+                          <MenuItem value={"Esposa"}>Esposa</MenuItem>
+                          <MenuItem value={"Abuelo"}>Abuelo</MenuItem>
+                          <MenuItem value={"Abuela"}>Abuela</MenuItem>
                           <MenuItem value={"Padre"}>Padre</MenuItem>
                           <MenuItem value={"Madre"}>Madre</MenuItem>
-                          <MenuItem value={"Hijo/a"}>Hijo/a</MenuItem>
-                          <MenuItem value={"Nieto/a"}>Nieto/a</MenuItem>
+                          <MenuItem value={"Hijo"}>Hijo</MenuItem>
+                          <MenuItem value={"Hija"}>Hija</MenuItem>
+                          <MenuItem value={"Nieto"}>Nieto</MenuItem>
+                          <MenuItem value={"Nieta"}>Nieta</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
@@ -540,9 +553,11 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                           }
                           label="Estado Civil"
                         >
-                          <MenuItem value={"Soltero/a"}>Soltero/a</MenuItem>
-                          <MenuItem value={"Casado/a"}>Casado/a</MenuItem>
-                          <MenuItem value={"Viudo/a"}>Viudo/a</MenuItem>
+                          <MenuItem value={"Soltero"}>Soltero</MenuItem>
+                          <MenuItem value={"Casado"}>Casado</MenuItem>
+                          <MenuItem value={"Separado"}>Separado</MenuItem>
+                          <MenuItem value={"Divorciado"}>Divorciado</MenuItem>
+                          <MenuItem value={"Viudo"}>Viudo</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
