@@ -2,9 +2,9 @@ import supabase from "../data-base/supabase.js";
 
 const ENTITY_NAME = "proyecto";
 
-const getProyects = async () => {
+export const getProyects = async () => {
   try {
-    const { data, error } = await supabase.from(ENTITY_NAME).select("*");
+    const { data, error } = await supabase().from(ENTITY_NAME).select("*");
 
     if (error) {
       throw new Error(error.message);
@@ -18,7 +18,7 @@ const getProyects = async () => {
 };
 
 export const createProyect = async (data) => {
-  const { error } = await supabase.from(ENTITY_NAME).insert(data);
+  const { error } = await supabase().from(ENTITY_NAME).insert(data);
 
   if (error) {
     throw new Error(error.message);
@@ -26,3 +26,5 @@ export const createProyect = async (data) => {
 
   return data;
 };
+
+export const deleteProyectByID = async (idProyecto) => {};
