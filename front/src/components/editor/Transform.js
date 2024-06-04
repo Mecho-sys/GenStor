@@ -414,6 +414,8 @@ const TransformTest = () => {
   return (
     <div style={{ display: "flex", height: "100vh" }}>
       <div>
+        {" "}
+        {/* Menu lateral de seleccion de figuras */}
         <Typography gutterBottom variant="h5" component="div">
           Personas
         </Typography>
@@ -557,7 +559,6 @@ const TransformTest = () => {
             </Grid>
           </Grid>
         </Box>
-
         <Typography gutterBottom variant="h5" component="div">
           Uniones
         </Typography>
@@ -633,7 +634,6 @@ const TransformTest = () => {
             </Grid>
           </Grid>
         </Box>
-
         <Typography gutterBottom variant="h5" component="div">
           Relaciones
         </Typography>
@@ -773,6 +773,21 @@ const TransformTest = () => {
           onTouchStart={checkDeselect}
         >
           <Layer>
+            {lines.map((line, i) => (
+              <LineComponent
+                key={i}
+                shapeProps={line}
+                isSelected={line.id === selectedId}
+                onSelect={() => {
+                  selectShape(line.id);
+                }}
+                onChange={(newAttrs) => {
+                  const updatedLines = lines.slice();
+                  updatedLines[i] = newAttrs;
+                  setLines(updatedLines);
+                }}
+              />
+            ))}
             {rectangles.map((rect, i) => {
               return (
                 <Rectangle
@@ -819,21 +834,6 @@ const TransformTest = () => {
                   const updatedTexts = texts.slice();
                   updatedTexts[i] = newAttrs;
                   setTexts(updatedTexts);
-                }}
-              />
-            ))}
-            {lines.map((line, i) => (
-              <LineComponent
-                key={i}
-                shapeProps={line}
-                isSelected={line.id === selectedId}
-                onSelect={() => {
-                  selectShape(line.id);
-                }}
-                onChange={(newAttrs) => {
-                  const updatedLines = lines.slice();
-                  updatedLines[i] = newAttrs;
-                  setLines(updatedLines);
                 }}
               />
             ))}
