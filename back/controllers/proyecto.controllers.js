@@ -1,4 +1,9 @@
-import { createProyect, getProyects } from "../models/proyecto.models.js";
+import {
+  createProyect,
+  getProyects,
+  deleteProyectById,
+  updateProyectById,
+} from "../models/proyecto.models.js";
 
 async function checkProyectToCreate(proyect, res) {
   try {
@@ -29,4 +34,34 @@ export const checkProyectsToGet = async (res) => {
   }
 };
 
-export { checkProyectToCreate };
+async function checkProyectToDelete(proyectId, res) {
+  console.log("Entro en controller de delete");
+  try {
+    await deleteProyectById(proyectId);
+    return res.json({ message: "Proyecto eliminado exitosamente" });
+  } catch (error) {
+    console.error("Error al eliminar el proyecto:", error);
+    return res.status(500).json({
+      message: "Error al eliminar el proyecto",
+      error: error.message,
+    });
+  }
+}
+
+async function checkProyectToEdit(id, data, res) {
+  try {
+    const updatedProyect = await updateProyectById(id, data);
+    return res.json({
+      message: "Proyecto actualizado exitosamente",
+      data: updatedProyect,
+    });
+  } catch (error) {
+    console.error("Error al actualizar el proyecto:", error);
+    return res.status(500).json({
+      message: "Error al actualizar el proyecto",
+      error: error.message,
+    });
+  }
+}
+
+export { checkProyectToCreate, checkProyectToDelete, checkProyectToEdit };

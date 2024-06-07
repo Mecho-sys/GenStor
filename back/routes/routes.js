@@ -1,4 +1,9 @@
-import { addProyect, getProyects } from "../middlewares/proyecto.midlewares.js";
+import {
+  addProyect,
+  getProyects,
+  deleteProyect,
+  editProyect,
+} from "../middlewares/proyecto.midlewares.js";
 
 export default function routes(app) {
   app.get("/", (req, res) => {
@@ -11,5 +16,14 @@ export default function routes(app) {
 
   app.post("/addProyect", async (req, res) => {
     return addProyect(req, res);
+  });
+
+  app.post("/deleteProyect", async (req, res) => {
+    console.log("Entro en la ruta de delete");
+    return deleteProyect(req, res);
+  });
+
+  app.post("/editProyect", async (req, res) => {
+    return editProyect(req, res);
   });
 }
