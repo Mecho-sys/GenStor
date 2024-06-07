@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Typography,
   Box,
@@ -16,17 +19,24 @@ import {
 } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
+import SaveIcon from "@mui/icons-material/Save";
 import SidebarMenu from "./SideBarMenu";
 import KonvaStage from "./KonvaStage";
+import Konva from "konva";
 
 const initialFigures = [];
 const initialText = [];
 const initialLines = [];
 
 const Canvas = () => {
+  const { projectId } = useParams();
+  const stageRef = useRef(null);
+  console.log("El ID del proyecto es:", projectId);
+
   const [figures, setFigures] = React.useState(initialFigures);
   const [selectedId, selectShape] = React.useState(null);
-  const [open, setOpen] = React.useState(false);
+  const [openTextDialog, setOpenTextDialog] = React.useState(false);
+  const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
 
   // Texto:
   const [texts, setTexts] = React.useState(initialText);
@@ -41,19 +51,34 @@ const Canvas = () => {
   const [startCoords, setStartCoords] = React.useState({ x: null, y: null });
   const [endCoords, setEndCoords] = React.useState({ x: null, y: null });
 
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/getProyects`);
+        const project = response.data.data.find((p) => p.id === projectId);
+        if (project && project.edit_file) {
+          const stage = Konva.Node.create(project.edit_file, "container");
+          stageRef.current.destroyChildren();
+          stageRef.current.add(stage);
+        }
+      } catch (error) {
+        console.error("Error al obtener el proyecto:", error);
+      }
+    };
+
+    fetchProject();
+  }, [projectId]);
+
   const checkDeselect = (e) => {
     if (creatingLine) {
-      // Guarda las coordenadas iniciales al inicio del proceso de creación de la línea
       if (startCoords.x == null && startCoords.y == null) {
         setStartCoords({ x: e.target.x(), y: e.target.y() });
         console.log("primer figura seleccionada es ");
         console.log(e.target.x());
       } else {
-        // Si estamos en modo creación de línea, guarda las coordenadas finales
         setEndCoords({ x: e.target.x(), y: e.target.y() });
         console.log("segunda figura seleccionada");
 
-        // Crea la línea con las coordenadas iniciales y finales
         const currentLines = [...lines];
         const newId = `line${currentLines.length + 1}`;
         const newLine = {
@@ -74,14 +99,12 @@ const Canvas = () => {
         currentLines.push(newLine);
         setLines(currentLines);
 
-        // Reinicia las coordenadas para el próximo par de clics
         setStartCoords({ x: null, y: null });
         setEndCoords({ x: null, y: null });
         setCreatingLine(false);
         console.log("Se añadió una línea");
       }
     } else {
-      // Si no estamos en modo creación de línea, deselecciona la figura
       const clickedOnEmpty = e.target === e.target.getStage();
       if (clickedOnEmpty) {
         selectShape(null);
@@ -303,12 +326,20 @@ const Canvas = () => {
     setFigures(currentFigures);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleClickOpenTextDialog = () => {
+    setOpenTextDialog(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseTextDialog = () => {
+    setOpenTextDialog(false);
+  };
+
+  const handleClickOpenSaveDialog = () => {
+    setOpenSaveDialog(true);
+  };
+
+  const handleCloseSaveDialog = () => {
+    setOpenSaveDialog(false);
   };
 
   const handleTextChange = (e) => {
@@ -338,7 +369,7 @@ const Canvas = () => {
 
     currentText.push(newText);
     setTexts(currentText);
-    setOpen(false);
+    handleCloseTextDialog();
   };
 
   const addLine = () => {
@@ -359,6 +390,28 @@ const Canvas = () => {
     setLines(currentLines);
   };
 
+  const handleSave = async () => {
+    const stageJson = stageRef.current.toJSON();
+    console.log(stageJson);
+    try {
+      await axios.post(`http://localhost:4000/editProyect`, {
+        id: projectId,
+        data: {
+          edit_file: stageJson,
+        },
+      });
+    } catch (error) {
+      console.error("Error al editar el proyecto:", error);
+    }
+  };
+
+  const handleSaveAndExit = () => {
+    handleSave();
+    console.log("Se cierra el dialog y se redirige al home");
+
+    handleCloseSaveDialog();
+  };
+
   return (
     <div>
       <Grid container>
@@ -376,21 +429,24 @@ const Canvas = () => {
           />
         </Grid>
         <Grid item xs={10}>
-          <KonvaStage
-            lines={lines}
-            figures={figures}
-            texts={texts}
-            selectedId={selectedId}
-            selectShape={selectShape}
-            setLines={setLines}
-            setFigures={setFigures}
-            setTexts={setTexts}
-            checkDeselect={checkDeselect}
-          />
+          <div id="container" style={{ height: "100%", width: "100%" }}>
+            <KonvaStage
+              lines={lines}
+              figures={figures}
+              texts={texts}
+              selectedId={selectedId}
+              selectShape={selectShape}
+              setLines={setLines}
+              setFigures={setFigures}
+              setTexts={setTexts}
+              checkDeselect={checkDeselect}
+              ref={stageRef}
+            />
+          </div>
         </Grid>
       </Grid>
       <IconButton
-        onClick={handleClickOpen}
+        onClick={handleClickOpenTextDialog}
         style={{
           backgroundColor: "lightblue",
           borderRadius: "50%",
@@ -403,7 +459,7 @@ const Canvas = () => {
       >
         <AddIcon />
       </IconButton>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={openTextDialog} onClose={handleCloseTextDialog}>
         <DialogTitle>Agregar Texto</DialogTitle>
         <DialogContent>
           <TextField
@@ -446,8 +502,49 @@ const Canvas = () => {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancelar</Button>
+          <Button onClick={handleCloseTextDialog}>Cancelar</Button>
           <Button onClick={addText}>Agregar</Button>
+        </DialogActions>
+      </Dialog>
+      <IconButton
+        onClick={handleClickOpenSaveDialog}
+        style={{
+          backgroundColor: "lightgreen",
+          borderRadius: "50%",
+          width: "60px",
+          height: "60px",
+          position: "fixed",
+          bottom: "100px",
+          right: "20px",
+        }}
+      >
+        <SaveIcon />
+      </IconButton>
+      <Dialog open={openSaveDialog} onClose={handleCloseSaveDialog}>
+        <DialogTitle>Guardar Canvas</DialogTitle>
+        <DialogContent>
+          <Typography>¿Qué acción deseas realizar?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleSave} variant="contained" color="primary">
+            Guardar
+          </Button>
+          <Button
+            onClick={handleSaveAndExit}
+            variant="contained"
+            color="primary"
+            component={Link}
+            to="/home"
+          >
+            Guardar y Salir
+          </Button>
+          <Button
+            onClick={handleCloseSaveDialog}
+            variant="contained"
+            color="secondary"
+          >
+            Cancelar
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

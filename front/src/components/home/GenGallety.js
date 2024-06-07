@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 //imports de Mui
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -23,6 +24,7 @@ export default function GenGallery() {
   const [editedName, setEditedName] = useState("");
   const [editedFamShift, setEditedFamShift] = useState("");
   const [editedDoctor, setEditedDoctor] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -83,6 +85,10 @@ export default function GenGallery() {
     }
   };
 
+  const handleLoginClick = (projectId) => {
+    navigate(`/editor/${projectId}`);
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={1}>
@@ -113,7 +119,10 @@ export default function GenGallery() {
                 <Box
                   sx={{ display: "flex", alignItems: "right", pl: 1, pb: 1 }}
                 >
-                  <IconButton aria-label="enter">
+                  <IconButton
+                    aria-label="enter"
+                    onClick={() => handleLoginClick(project.id)}
+                  >
                     <LoginIcon sx={{ height: 30, width: 30 }} />
                   </IconButton>
                   <IconButton

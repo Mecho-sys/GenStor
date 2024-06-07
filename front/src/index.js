@@ -39,6 +39,10 @@ const router = createBrowserRouter([
         path: "/editor",
         element: <Canvas />,
       },
+      {
+        path: "/editor/:projectId",
+        element: <Canvas />,
+      },
     ],
   },
   {
