@@ -9,7 +9,17 @@ import {
   CardContent,
 } from "@mui/material";
 
-const SidebarMenu = ({ addRectangle, addCircle, addLine, addLinePunt }) => {
+const SidebarMenu = ({
+  addRectangle,
+  addCircle,
+  addLine,
+  addLinePunt,
+  addOval,
+  addCircleIdent,
+  addCrossRectangle,
+  addCrossedCircle,
+  addDobleRectangle,
+}) => {
   return (
     <div>
       <Typography gutterBottom variant="h5" component="div">
@@ -36,7 +46,7 @@ const SidebarMenu = ({ addRectangle, addCircle, addLine, addLinePunt }) => {
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addCircle}>
+              <CardActionArea onClick={() => addCircle(1)}>
                 <CardMedia
                   component="img"
                   height="100"
@@ -53,7 +63,7 @@ const SidebarMenu = ({ addRectangle, addCircle, addLine, addLinePunt }) => {
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addCircle}>
+              <CardActionArea onClick={addCrossRectangle}>
                 <CardMedia
                   component="img"
                   height="100"
@@ -70,7 +80,7 @@ const SidebarMenu = ({ addRectangle, addCircle, addLine, addLinePunt }) => {
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addCircle}>
+              <CardActionArea onClick={addCrossedCircle}>
                 <CardMedia
                   component="img"
                   height="100"
@@ -87,7 +97,7 @@ const SidebarMenu = ({ addRectangle, addCircle, addLine, addLinePunt }) => {
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addRectangle}>
+              <CardActionArea onClick={addDobleRectangle}>
                 <CardMedia
                   component="img"
                   height="100"
@@ -104,7 +114,7 @@ const SidebarMenu = ({ addRectangle, addCircle, addLine, addLinePunt }) => {
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addCircle}>
+              <CardActionArea onClick={addCircleIdent}>
                 <CardMedia
                   component="img"
                   height="100"
@@ -121,7 +131,7 @@ const SidebarMenu = ({ addRectangle, addCircle, addLine, addLinePunt }) => {
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addCircle}>
+              <CardActionArea onClick={() => addCircle(2)}>
                 <CardMedia
                   component="img"
                   height="100"
@@ -138,7 +148,7 @@ const SidebarMenu = ({ addRectangle, addCircle, addLine, addLinePunt }) => {
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addCircle}>
+              <CardActionArea onClick={addOval}>
                 <CardMedia
                   component="img"
                   height="100"

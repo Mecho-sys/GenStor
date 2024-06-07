@@ -3,10 +3,6 @@ import {
   Typography,
   Box,
   Grid,
-  Card,
-  CardActionArea,
-  CardMedia,
-  CardContent,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -23,14 +19,12 @@ import AddIcon from "@mui/icons-material/Add";
 import SidebarMenu from "./SideBarMenu";
 import KonvaStage from "./KonvaStage";
 
-const initialRectangles = [];
-const initialCircles = [];
+const initialFigures = [];
 const initialText = [];
 const initialLines = [];
 
 const Canvas = () => {
-  const [rectangles, setRectangles] = React.useState(initialRectangles);
-  const [circles, setCircles] = React.useState(initialCircles);
+  const [figures, setFigures] = React.useState(initialFigures);
   const [selectedId, selectShape] = React.useState(null);
   const [open, setOpen] = React.useState(false);
 
@@ -52,7 +46,8 @@ const Canvas = () => {
       // Guarda las coordenadas iniciales al inicio del proceso de creación de la línea
       if (startCoords.x == null && startCoords.y == null) {
         setStartCoords({ x: e.target.x(), y: e.target.y() });
-        console.log("primer figura seleccionada");
+        console.log("primer figura seleccionada es ");
+        console.log(e.target.x());
       } else {
         // Si estamos en modo creación de línea, guarda las coordenadas finales
         setEndCoords({ x: e.target.x(), y: e.target.y() });
@@ -73,7 +68,7 @@ const Canvas = () => {
             e.target.y() + 50,
           ],
           stroke: "black",
-          strokeWidth: 2,
+          strokeWidth: 4,
           id: newId,
         };
         currentLines.push(newLine);
@@ -95,40 +90,217 @@ const Canvas = () => {
   };
 
   const addRectangle = () => {
-    const currentRectangles = [...rectangles];
+    const currentFigures = [...figures];
 
-    const newId = `rect${currentRectangles.length + 1}`;
+    const newId = `rect${currentFigures.length + 1}`;
     const newRect = {
-      x: 150 + currentRectangles.length * 10,
-      y: 150 + currentRectangles.length * 10,
+      x: 150 + currentFigures.length * 10,
+      y: 150 + currentFigures.length * 10,
       width: 100,
       height: 100,
       fill: "white",
       stroke: "black",
       strokeWidth: 4,
+      figure: "rectangle",
       id: newId,
     };
 
-    currentRectangles.push(newRect);
-    setRectangles(currentRectangles);
+    currentFigures.push(newRect);
+    setFigures(currentFigures);
   };
 
-  const addCircle = () => {
-    const currentCircles = [...circles];
+  const addCrossedRectangle = () => {
+    const currentFigures = [...figures];
 
-    const newId = `circle${currentCircles.length + 1}`;
-    const newCircle = {
-      x: 150 + currentCircles.length * 10,
-      y: 150 + currentCircles.length * 10,
-      radius: 50,
+    const newId = `rect${currentFigures.length + 1}`;
+    const x = 0;
+    const y = 0;
+    const width = 100;
+    const height = 100;
+
+    const newRect = {
+      x: x,
+      y: y,
+      width: width,
+      height: height,
       fill: "white",
       stroke: "black",
       strokeWidth: 4,
+      figure: "crossedRectangle",
+      id: newId,
+      lines: [
+        // Diagonal lines
+        {
+          points: [x, y, x + width, y + height],
+          stroke: "black",
+          strokeWidth: 3,
+        },
+        {
+          points: [x, y + height, x + width, y],
+          stroke: "black",
+          strokeWidth: 3,
+        },
+      ],
+    };
+
+    currentFigures.push(newRect);
+    setFigures(currentFigures);
+  };
+
+  const addDobleRectangle = () => {
+    const currentFigures = [...figures];
+
+    const newId = `rect${currentFigures.length + 1}`;
+    const x = 150 + currentFigures.length * 10;
+    const y = 150 + currentFigures.length * 10;
+    const width = 100;
+    const height = 100;
+
+    const newRect = {
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      fill: "white",
+      stroke: "black",
+      strokeWidth: 3,
+      figure: "rectangleId",
+      id: newId,
+      innerRect: {
+        x: x + 10,
+        y: y + 10,
+        width: width - 20,
+        height: height - 20,
+        fill: "white",
+        stroke: "black",
+        strokeWidth: 3,
+        id: `${newId}_inner`,
+      },
+    };
+
+    currentFigures.push(newRect);
+    setFigures(currentFigures);
+  };
+
+  const addCircle = (option) => {
+    const currentFigures = [...figures];
+
+    const newId = `circle${currentFigures.length + 1}`;
+    let newCircle;
+
+    if (option === 1) {
+      newCircle = {
+        x: 150 + currentFigures.length * 10,
+        y: 150 + currentFigures.length * 10,
+        radius: 50,
+        fill: "white",
+        stroke: "black",
+        strokeWidth: 4,
+        figure: "circle",
+        id: newId,
+      };
+    } else if (option === 2) {
+      newCircle = {
+        x: 150 + currentFigures.length * 10,
+        y: 150 + currentFigures.length * 10,
+        radius: 30,
+        fill: "black",
+        stroke: "black",
+        strokeWidth: 4,
+        figure: "circle",
+        id: newId,
+      };
+    }
+    currentFigures.push(newCircle);
+    setFigures(currentFigures);
+  };
+
+  const addCrossedCircle = () => {
+    const currentFigures = [...figures];
+
+    const newId = `circle${currentFigures.length + 1}`;
+    const x = 0;
+    const y = 0;
+    const radius = 50;
+
+    const newCircle = {
+      x: x,
+      y: y,
+      radius: radius,
+      fill: "white",
+      stroke: "black",
+      strokeWidth: 4,
+      figure: "crossedCircle",
+      id: newId,
+      lines: [
+        // Diagonal lines
+        {
+          points: [
+            x - radius + 12,
+            y - radius + 12,
+            x + radius - 12,
+            y + radius - 12,
+          ],
+          stroke: "black",
+          strokeWidth: 3,
+        },
+        {
+          points: [
+            x + radius - 12,
+            y - radius + 12,
+            x - radius + 12,
+            y + radius - 12,
+          ],
+          stroke: "black",
+          strokeWidth: 3,
+        },
+      ],
+    };
+
+    currentFigures.push(newCircle);
+    setFigures(currentFigures);
+  };
+
+  const addOval = () => {
+    const currentFigures = [...figures];
+
+    const newId = `oval${currentFigures.length + 1}`;
+
+    const newOval = {
+      x: 150 + currentFigures.length * 10,
+      y: 150 + currentFigures.length * 10,
+      radiusX: 100,
+      radiusY: 50,
+      fill: "transparent",
+      stroke: "black",
+      strokeWidth: 4,
+      dash: [33, 10],
+      figure: "oval",
       id: newId,
     };
 
-    currentCircles.push(newCircle);
-    setCircles(currentCircles);
+    currentFigures.push(newOval);
+    setFigures(currentFigures);
+  };
+
+  const addCircleIdent = () => {
+    const currentFigures = [...figures];
+
+    const newId = `circle${currentFigures.length + 1}`;
+
+    const newcircleId = {
+      x: 150 + currentFigures.length * 10,
+      y: 150 + currentFigures.length * 10,
+      innerRadius: 50,
+      outerRadius: 40,
+      fill: "white",
+      stroke: "black",
+      strokeWidth: 4,
+      figure: "circleId",
+      id: newId,
+    };
+    currentFigures.push(newcircleId);
+    setFigures(currentFigures);
   };
 
   const handleClickOpen = () => {
@@ -141,10 +313,6 @@ const Canvas = () => {
 
   const handleTextChange = (e) => {
     setTextPhrase(e.target.value);
-  };
-
-  const handleTextSizeChange = (e) => {
-    setTextSize(e.target.value);
   };
 
   const handleTextFontFamChange = (e) => {
@@ -183,7 +351,7 @@ const Canvas = () => {
     const newLine = {
       points: [23, 20, 100, 20],
       stroke: "black",
-      strokeWidth: 2,
+      strokeWidth: 4,
       dash: [10, 5],
       id: newId,
     };
@@ -194,25 +362,28 @@ const Canvas = () => {
   return (
     <div>
       <Grid container>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <SidebarMenu
             addRectangle={addRectangle}
+            addCrossRectangle={addCrossedRectangle}
             addCircle={addCircle}
             addLine={addLine}
             addLinePunt={addLinePunt}
+            addOval={addOval}
+            addCircleIdent={addCircleIdent}
+            addCrossedCircle={addCrossedCircle}
+            addDobleRectangle={addDobleRectangle}
           />
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={10}>
           <KonvaStage
             lines={lines}
-            rectangles={rectangles}
-            circles={circles}
+            figures={figures}
             texts={texts}
             selectedId={selectedId}
             selectShape={selectShape}
             setLines={setLines}
-            setRectangles={setRectangles}
-            setCircles={setCircles}
+            setFigures={setFigures}
             setTexts={setTexts}
             checkDeselect={checkDeselect}
           />
