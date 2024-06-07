@@ -15,7 +15,6 @@ async function getProyects(req, res, next) {
 }
 
 async function deleteProyect(req, res, next) {
-  console.log("Entro en midleware de delete");
   const proyectId = req.body.id;
   await checkProyectToDelete(proyectId, res);
 }

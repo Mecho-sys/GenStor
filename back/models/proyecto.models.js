@@ -28,7 +28,6 @@ export const createProyect = async (data) => {
 };
 
 export const deleteProyectById = async (proyectId) => {
-  console.log("Entro en el model de delete");
   try {
     const { error } = await supabase()
       .from(ENTITY_NAME)

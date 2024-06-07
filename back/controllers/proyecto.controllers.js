@@ -35,7 +35,6 @@ export const checkProyectsToGet = async (res) => {
 };
 
 async function checkProyectToDelete(proyectId, res) {
-  console.log("Entro en controller de delete");
   try {
     await deleteProyectById(proyectId);
     return res.json({ message: "Proyecto eliminado exitosamente" });

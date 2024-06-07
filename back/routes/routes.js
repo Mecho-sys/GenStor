@@ -19,7 +19,6 @@ export default function routes(app) {
   });
 
   app.post("/deleteProyect", async (req, res) => {
-    console.log("Entro en la ruta de delete");
     return deleteProyect(req, res);
   });
 
