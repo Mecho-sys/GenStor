@@ -14,6 +14,8 @@ const SidebarMenu = ({
   addCircle,
   addLine,
   addLinePunt,
+  addLineSeparate,
+  addLineDivorse,
   addOval,
   addCircleIdent,
   addCrossRectangle,
@@ -206,7 +208,7 @@ const SidebarMenu = ({
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addLine}>
+              <CardActionArea onClick={addLineSeparate}>
                 <CardMedia
                   component="img"
                   height="10"
@@ -223,12 +225,12 @@ const SidebarMenu = ({
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addLinePunt}>
+              <CardActionArea onClick={addLineDivorse}>
                 <CardMedia
                   component="img"
                   height="10"
                   image="/assets/Div.JPG"
-                  alt="Línea punteada"
+                  alt="Divorcio"
                 />
                 <CardContent>
                   <Typography variant="body2" color="text.secondary">

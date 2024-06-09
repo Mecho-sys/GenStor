@@ -49,6 +49,8 @@ const Canvas = () => {
   const [lines, setLines] = React.useState(initialLines);
   const [creatingLine, setCreatingLine] = React.useState(false);
   const [creatingLinePunt, setCreatingLinePunt] = React.useState(false);
+  const [creatingLineSeparate, setcreatingLineSeparate] = React.useState(false);
+  const [creatingLineDivorse, setcreatingLineDivorse] = React.useState(false);
   const [startCoords, setStartCoords] = React.useState({ x: null, y: null });
 
   useEffect(() => {
@@ -236,6 +238,247 @@ const Canvas = () => {
             setStartCoords({ x: null, y: null });
             setCreatingLine(false);
             console.log("Se añadió una línea");
+          }
+        } else {
+          console.log("No se hizo clic en una figura válida");
+        }
+      } else {
+        console.log("Se hizo clic en un área vacía");
+      }
+    } else if (creatingLineSeparate) {
+      if (!clickedOnEmpty) {
+        const clickedShape = e.target;
+        const isFigure = figures.find(
+          (fig) => fig.id === clickedShape.attrs.id
+        );
+
+        if (isFigure) {
+          if (startCoords.x === null && startCoords.y === null) {
+            setStartCoords({ x: clickedShape.x(), y: clickedShape.y() });
+            console.log("Primera figura seleccionada:", clickedShape.attrs.id);
+          } else {
+            console.log("Segunda figura seleccionada:", clickedShape.attrs.id);
+
+            const startId = figures.find(
+              (fig) => fig.x === startCoords.x && fig.y === startCoords.y
+            ).id;
+            const endId = clickedShape.attrs.id;
+
+            const currentLines = [...lines];
+            const newId = `line${currentLines.length + 1}`;
+            const newDiagonalId = `line${currentLines.length + 2}`;
+            let newLine, diagonalLine;
+
+            const startIsRect = startId.startsWith("rect");
+            const endIsRect = endId.startsWith("rect");
+            const startIsCircle = startId.startsWith("circle");
+            const endIsCircle = endId.startsWith("circle");
+
+            // Lógica para determinar los puntos de la línea principal
+            let points;
+            if (startIsRect && endIsCircle) {
+              points = [
+                startCoords.x + 50,
+                startCoords.y + 100,
+                startCoords.x + 50,
+                startCoords.y + 150,
+                (startCoords.x + 50 + clickedShape.x()) / 2,
+                (startCoords.y + 150 + clickedShape.y() + 100) / 2,
+                clickedShape.x(),
+                clickedShape.y() + 100,
+                clickedShape.x(),
+                clickedShape.y() + 50,
+              ];
+            } else if (startIsRect && endIsRect) {
+              points = [
+                startCoords.x + 50,
+                startCoords.y + 100,
+                startCoords.x + 50,
+                startCoords.y + 150,
+                (startCoords.x + 50 + clickedShape.x() + 50) / 2,
+                (startCoords.y + 150 + clickedShape.y() + 150) / 2,
+                clickedShape.x() + 50,
+                clickedShape.y() + 150,
+                clickedShape.x() + 50,
+                clickedShape.y() + 100,
+              ];
+            } else if (startIsCircle && endIsRect) {
+              points = [
+                startCoords.x,
+                startCoords.y + 50,
+                startCoords.x,
+                startCoords.y + 100,
+                (startCoords.x + clickedShape.x() + 50) / 2,
+                (startCoords.y + 100 + clickedShape.y() + 150) / 2,
+                clickedShape.x() + 50,
+                clickedShape.y() + 150,
+                clickedShape.x() + 50,
+                clickedShape.y() + 100,
+              ];
+            } else if (startIsCircle && endIsCircle) {
+              points = [
+                startCoords.x,
+                startCoords.y + 50,
+                startCoords.x,
+                startCoords.y + 100,
+                (startCoords.x + clickedShape.x()) / 2,
+                (startCoords.y + 100 + clickedShape.y() + 100) / 2,
+                clickedShape.x(),
+                clickedShape.y() + 100,
+                clickedShape.x(),
+                clickedShape.y() + 50,
+              ];
+            }
+
+            // Puntos para la línea diagonal en el punto medio
+            const midX = points[4];
+            const midY = points[5];
+            diagonalLine = {
+              points: [midX + 10, midY - 10, midX - 10, midY + 10],
+              stroke: "black",
+              strokeWidth: 3,
+              id: newDiagonalId,
+            };
+
+            newLine = {
+              points,
+              stroke: "black",
+              strokeWidth: 4,
+              id: newId,
+            };
+
+            currentLines.push(newLine);
+            currentLines.push(diagonalLine);
+            setLines(currentLines);
+
+            setStartCoords({ x: null, y: null });
+            setcreatingLineSeparate(false);
+            console.log("Se añadieron dos líneas");
+          }
+        } else {
+          console.log("No se hizo clic en una figura válida");
+        }
+      } else {
+        console.log("Se hizo clic en un área vacía");
+      }
+    } else if (creatingLineDivorse) {
+      if (!clickedOnEmpty) {
+        const clickedShape = e.target;
+        const isFigure = figures.find(
+          (fig) => fig.id === clickedShape.attrs.id
+        );
+
+        if (isFigure) {
+          if (startCoords.x === null && startCoords.y === null) {
+            setStartCoords({ x: clickedShape.x(), y: clickedShape.y() });
+            console.log("Primera figura seleccionada:", clickedShape.attrs.id);
+          } else {
+            console.log("Segunda figura seleccionada:", clickedShape.attrs.id);
+
+            const startId = figures.find(
+              (fig) => fig.x === startCoords.x && fig.y === startCoords.y
+            ).id;
+            const endId = clickedShape.attrs.id;
+
+            const currentLines = [...lines];
+            const newId = `line${currentLines.length + 1}`;
+            const newDiagonalId1 = `line${currentLines.length + 2}`;
+            const newDiagonalId2 = `line${currentLines.length + 3}`;
+            let newLine, diagonalLine1, diagonalLine2;
+
+            const startIsRect = startId.startsWith("rect");
+            const endIsRect = endId.startsWith("rect");
+            const startIsCircle = startId.startsWith("circle");
+            const endIsCircle = endId.startsWith("circle");
+
+            // Lógica para determinar los puntos de la línea principal
+            let points;
+            if (startIsRect && endIsCircle) {
+              points = [
+                startCoords.x + 50,
+                startCoords.y + 100,
+                startCoords.x + 50,
+                startCoords.y + 150,
+                (startCoords.x + 50 + clickedShape.x()) / 2,
+                (startCoords.y + 150 + clickedShape.y() + 100) / 2,
+                clickedShape.x(),
+                clickedShape.y() + 100,
+                clickedShape.x(),
+                clickedShape.y() + 50,
+              ];
+            } else if (startIsRect && endIsRect) {
+              points = [
+                startCoords.x + 50,
+                startCoords.y + 100,
+                startCoords.x + 50,
+                startCoords.y + 150,
+                (startCoords.x + 50 + clickedShape.x() + 50) / 2,
+                (startCoords.y + 150 + clickedShape.y() + 150) / 2,
+                clickedShape.x() + 50,
+                clickedShape.y() + 150,
+                clickedShape.x() + 50,
+                clickedShape.y() + 100,
+              ];
+            } else if (startIsCircle && endIsRect) {
+              points = [
+                startCoords.x,
+                startCoords.y + 50,
+                startCoords.x,
+                startCoords.y + 100,
+                (startCoords.x + clickedShape.x() + 50) / 2,
+                (startCoords.y + 100 + clickedShape.y() + 150) / 2,
+                clickedShape.x() + 50,
+                clickedShape.y() + 150,
+                clickedShape.x() + 50,
+                clickedShape.y() + 100,
+              ];
+            } else if (startIsCircle && endIsCircle) {
+              points = [
+                startCoords.x,
+                startCoords.y + 50,
+                startCoords.x,
+                startCoords.y + 100,
+                (startCoords.x + clickedShape.x()) / 2,
+                (startCoords.y + 100 + clickedShape.y() + 100) / 2,
+                clickedShape.x(),
+                clickedShape.y() + 100,
+                clickedShape.x(),
+                clickedShape.y() + 50,
+              ];
+            }
+
+            // Puntos para las líneas diagonales en el punto medio
+            const midX = points[4];
+            const midY = points[5];
+            diagonalLine1 = {
+              points: [midX + 20, midY - 10, midX + 10, midY, midX, midY + 10],
+              stroke: "black",
+              strokeWidth: 3,
+              id: newDiagonalId1,
+            };
+            diagonalLine2 = {
+              points: [midX, midY - 10, midX - 10, midY, midX - 20, midY + 10],
+              stroke: "back",
+              strokeWidth: 3,
+              id: newDiagonalId2,
+            };
+
+            // Crear la nueva línea principal
+            newLine = {
+              points,
+              stroke: "black",
+              strokeWidth: 4,
+              id: newId,
+            };
+
+            currentLines.push(newLine);
+            currentLines.push(diagonalLine1);
+            currentLines.push(diagonalLine2);
+            setLines(currentLines);
+
+            setStartCoords({ x: null, y: null });
+            setcreatingLineDivorse(false);
+            console.log("Se añadieron tres líneas");
           }
         } else {
           console.log("No se hizo clic en una figura válida");
@@ -694,6 +937,14 @@ const Canvas = () => {
     setCreatingLinePunt(true);
   };
 
+  const addLineSeparate = () => {
+    setcreatingLineSeparate(true);
+  };
+
+  const addLineDivorse = () => {
+    setcreatingLineDivorse(true);
+  };
+
   const handleSave = async () => {
     const stageJson = stageRef.current.toJSON();
     console.log(stageJson);
@@ -744,6 +995,8 @@ const Canvas = () => {
             addCircle={addCircle}
             addLine={addLine}
             addLinePunt={addLinePunt}
+            addLineSeparate={addLineSeparate}
+            addLineDivorse={addLineDivorse}
             addOval={addOval}
             addCircleIdent={addCircleIdent}
             addCrossedCircle={addCrossedCircle}
