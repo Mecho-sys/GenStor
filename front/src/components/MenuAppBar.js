@@ -6,9 +6,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -34,18 +31,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function MenuAppBar() {
-  const [auth, setAuth] = React.useState("Login");
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const handleDrawerOpen = () => {
     setIsDrawerOpen(true);
@@ -53,10 +40,6 @@ export default function MenuAppBar() {
 
   const handleDrawerClose = () => {
     setIsDrawerOpen(false);
-  };
-
-  const handleProfile = () => {
-    setIsDialogOpen(true);
   };
 
   return (

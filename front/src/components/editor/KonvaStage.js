@@ -32,6 +32,9 @@ const KonvaStage = forwardRef(
       toJSON: () => {
         return stageRef.current.toJSON();
       },
+      toDataURL: (options) => {
+        return stageRef.current.toDataURL(options);
+      },
     }));
 
     const handleShapeChange = (newAttrs, i) => {
@@ -50,6 +53,19 @@ const KonvaStage = forwardRef(
         onTouchStart={checkDeselect}
       >
         <Layer>
+          {lines.map((line, i) => (
+            <Line
+              key={i}
+              {...line}
+              draggable
+              onClick={() => selectShape(line.id)}
+              onDragEnd={(e) => {
+                const updatedLines = lines.slice();
+                updatedLines[i] = { ...line, points: e.target.points() };
+                setLines(updatedLines);
+              }}
+            />
+          ))}
           {figures.map((shape, i) => {
             if (shape.figure === "oval") {
               return (
@@ -195,19 +211,7 @@ const KonvaStage = forwardRef(
             }
             return null;
           })}
-          {lines.map((line, i) => (
-            <Line
-              key={i}
-              {...line}
-              draggable
-              onClick={() => selectShape(line.id)}
-              onDragEnd={(e) => {
-                const updatedLines = lines.slice();
-                updatedLines[i] = { ...line, points: e.target.points() };
-                setLines(updatedLines);
-              }}
-            />
-          ))}
+
           {texts.map((text, i) => (
             <Text
               key={i}
