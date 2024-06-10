@@ -1,14 +1,5 @@
 import React, { forwardRef, useImperativeHandle } from "react";
-import {
-  Stage,
-  Layer,
-  Group,
-  Line,
-  Rect,
-  Circle,
-  Ring,
-  Text,
-} from "react-konva";
+import { Stage, Layer, Group, Line, Rect, Circle, Text } from "react-konva";
 import EllipseComponent from "./figures/EllipseComponent";
 
 const KonvaStage = forwardRef(
@@ -97,18 +88,26 @@ const KonvaStage = forwardRef(
               );
             } else if (shape.figure === "circleId") {
               return (
-                <Ring
-                  key={shape.id}
-                  {...shape}
-                  draggable
-                  onClick={() => selectShape(shape.id)}
-                  onDragEnd={(e) =>
-                    handleShapeChange(
-                      { ...shape, x: e.target.x(), y: e.target.y() },
-                      i
-                    )
-                  }
-                />
+                <Group key={shape.id}>
+                  <Circle
+                    {...shape}
+                    draggable
+                    onClick={() => selectShape(shape.id)}
+                    onDragEnd={(e) => {
+                      const x = e.target.x();
+                      const y = e.target.y();
+                      const updatedFigures = figures.slice();
+                      updatedFigures[i] = {
+                        ...shape,
+                        x,
+                        y,
+                        innerCircle: { ...shape.innerCircle, x: x, y: y },
+                      };
+                      setFigures(updatedFigures);
+                    }}
+                  />
+                  <Circle {...shape.innerCircle} />
+                </Group>
               );
             } else if (shape.figure === "crossedCircle") {
               return (

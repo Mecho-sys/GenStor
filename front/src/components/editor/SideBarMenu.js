@@ -16,6 +16,7 @@ const SidebarMenu = ({
   addLinePunt,
   addLineSeparate,
   addLineDivorse,
+  addRelation,
   addOval,
   addCircleIdent,
   addCrossRectangle,
@@ -82,7 +83,7 @@ const SidebarMenu = ({
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addCrossedCircle}>
+              <CardActionArea onClick={() => addCrossedCircle(1)}>
                 <CardMedia
                   component="img"
                   height="100"
@@ -150,7 +151,7 @@ const SidebarMenu = ({
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addOval}>
+              <CardActionArea onClick={() => addCrossedCircle(2)}>
                 <CardMedia
                   component="img"
                   height="100"
@@ -249,7 +250,7 @@ const SidebarMenu = ({
         <Grid container spacing={0.5}>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addLinePunt}>
+              <CardActionArea onClick={() => addRelation(1)}>
                 <CardMedia
                   component="img"
                   height="10"
@@ -266,7 +267,7 @@ const SidebarMenu = ({
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addLinePunt}>
+              <CardActionArea onClick={() => addRelation(2)}>
                 <CardMedia
                   component="img"
                   height="30"
@@ -283,7 +284,7 @@ const SidebarMenu = ({
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addLinePunt}>
+              <CardActionArea onClick={() => addRelation(3)}>
                 <CardMedia
                   component="img"
                   height="10"
@@ -300,7 +301,7 @@ const SidebarMenu = ({
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addLinePunt}>
+              <CardActionArea onClick={() => addRelation(4)}>
                 <CardMedia
                   component="img"
                   height="10"
@@ -317,7 +318,7 @@ const SidebarMenu = ({
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addLinePunt}>
+              <CardActionArea onClick={() => addRelation(5)}>
                 <CardMedia
                   component="img"
                   height="10"
@@ -334,7 +335,7 @@ const SidebarMenu = ({
           </Grid>
           <Grid item xs={6} md={4}>
             <Card sx={{ maxWidth: 100 }}>
-              <CardActionArea onClick={addLinePunt}>
+              <CardActionArea onClick={() => addRelation(6)}>
                 <CardMedia
                   component="img"
                   height="10"
@@ -344,6 +345,23 @@ const SidebarMenu = ({
                 <CardContent>
                   <Typography variant="body2" color="text.secondary">
                     Fusion-Conflicto
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <Card sx={{ maxWidth: 100 }}>
+              <CardActionArea onClick={addOval}>
+                <CardMedia
+                  component="img"
+                  height="100"
+                  image="/assets/Convivencia.JPG"
+                  alt="Convivencia"
+                />
+                <CardContent>
+                  <Typography variant="body2" color="text.secondary">
+                    Convivencia
                   </Typography>
                 </CardContent>
               </CardActionArea>
