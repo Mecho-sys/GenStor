@@ -673,32 +673,62 @@ const Canvas = () => {
             let endY = clickedShape.y() + (endIsRect ? 50 : 0);
 
             const createParallelLines = (count, offset) => {
-              for (let i = 0; i < count; i++) {
-                newLines.push({
-                  points: [
-                    startX + i * offset,
-                    startY + i * offset,
-                    endX + i * offset,
-                    endY + i * offset,
-                  ],
-                  stroke: "black",
-                  strokeWidth: 4,
-                  id: `${newId}_${i}`,
-                });
+              if (count === 2) {
+                for (let i = 0; i < count; i++) {
+                  newLines.push({
+                    points: [
+                      startX + i * offset,
+                      startY + i * offset,
+                      endX + i * offset,
+                      endY + i * offset,
+                    ],
+                    stroke: "black",
+                    strokeWidth: 4,
+                    id: `${newId}_${i}`,
+                  });
+                }
+              } else if (count === 3) {
+                const sX = startX - offset;
+                const sY = startY - offset;
+                const eX = endX - offset;
+                const eY = endY - offset;
+
+                for (let i = 0; i < count; i++) {
+                  newLines.push({
+                    points: [
+                      sX + i * offset,
+                      sY + i * offset,
+                      eX + i * offset,
+                      eY + i * offset,
+                    ],
+                    stroke: "black",
+                    strokeWidth: 4,
+                    id: `${newId}_${i}`,
+                  });
+                }
               }
             };
 
             const createConflictLine = () => {
-              const numberOfZigs = 20; // Increase this number for more "v"s
+              const numberOfZigs = 20;
               const points = [];
+
+              const totalDistance = Math.sqrt(
+                Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2)
+              );
               const dx = (endX - startX) / numberOfZigs;
-              const dy = Math.abs((endY - startY) / numberOfZigs);
+              const dy = (endY - startY) / numberOfZigs;
+              const zigzagAmplitude = totalDistance / (numberOfZigs * 2);
 
               for (let i = 0; i <= numberOfZigs; i++) {
                 const x = startX + i * dx;
-                const y = startY + (i % 2 === 0 ? dy : -dy);
+                const y =
+                  startY +
+                  i * dy +
+                  (i % 2 === 0 ? zigzagAmplitude : -zigzagAmplitude);
                 points.push(x, y);
               }
+
               points.push(endX, endY);
 
               newLines.push({
@@ -707,6 +737,28 @@ const Canvas = () => {
                 strokeWidth: 4,
                 id: newId,
               });
+            };
+
+            const createFusionConflicto = (count, offset) => {
+              createConflictLine();
+              const sX = startX - offset;
+              const sY = startY - offset;
+              const eX = endX - offset;
+              const eY = endY - offset;
+
+              for (let i = 0; i < count; i++) {
+                newLines.push({
+                  points: [
+                    sX + i * offset,
+                    sY + i * offset,
+                    eX + i * offset,
+                    eY + i * offset,
+                  ],
+                  stroke: "black",
+                  strokeWidth: 4,
+                  id: `${newId}_${i}`,
+                });
+              }
             };
 
             const createDottedLine = () => {
@@ -721,37 +773,66 @@ const Canvas = () => {
 
             const createBreakLine = () => {
               const segments = 5;
-              const gapRatio = 0.2;
               const totalLength = Math.sqrt(
                 Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2)
               );
               const segmentLength = totalLength / segments;
-              const gapLength = segmentLength * gapRatio;
 
-              const points1 = [];
-              const points2 = [];
               const dx = (endX - startX) / segments;
               const dy = (endY - startY) / segments;
 
-              for (let i = 0; i < segments; i++) {
-                if (i === Math.floor(segments / 2)) {
-                  // Add T shapes
-                  points1.push(
-                    startX + i * dx - gapLength / 2,
-                    startY + i * dy
-                  );
-                  points1.push(
-                    startX + i * dx + gapLength / 2,
-                    startY + i * dy
-                  );
+              const points1 = [];
+              const points2 = [];
+              const points3 = [];
 
-                  points2.push(startX + i * dx, startY + i * dy - 10);
-                  points2.push(startX + i * dx, startY + i * dy + 10);
+              let midSegmentIndex1 = Math.floor(segments / 2);
+              let midSegmentIndex2 = Math.floor(segments / 2) + 1;
+
+              for (let i = 0; i < segments; i++) {
+                if (i === midSegmentIndex1 || i === midSegmentIndex2) {
+                  const midX = startX + i * dx;
+                  const midY = startY + i * dy;
+
+                  if (i === midSegmentIndex1) {
+                    points1.push(midX - dx / 2, midY - dy / 2);
+                    points1.push(midX + dx / 2, midY + dy / 2);
+                  }
+
+                  const barLength = 20;
+                  const perpendicularAngle = Math.atan2(dy, dx) + Math.PI / 2;
+                  const barX1 =
+                    midX - (barLength / 2) * Math.cos(perpendicularAngle);
+                  const barY1 =
+                    midY - (barLength / 2) * Math.sin(perpendicularAngle);
+                  const barX2 =
+                    midX + (barLength / 2) * Math.cos(perpendicularAngle);
+                  const barY2 =
+                    midY + (barLength / 2) * Math.sin(perpendicularAngle);
+
+                  points2.push(
+                    midX,
+                    midY,
+                    barX1,
+                    barY1,
+                    midX,
+                    midY,
+                    barX2,
+                    barY2
+                  );
+                  points3.push(midX, midY);
                 } else {
+                  // Normal line segments
                   points1.push(startX + i * dx, startY + i * dy);
                 }
               }
               points1.push(endX, endY);
+
+              const whiteLinePoints = [
+                points3[0],
+                points3[1],
+                points3[2],
+                points3[3],
+              ];
 
               newLines.push(
                 {
@@ -765,23 +846,14 @@ const Canvas = () => {
                   stroke: "black",
                   strokeWidth: 4,
                   id: `${newId}_2`,
+                },
+                {
+                  points: whiteLinePoints,
+                  stroke: "white",
+                  strokeWidth: 30,
+                  id: `${newId}_3`,
                 }
               );
-            };
-            const createFusionConflicto = (count, offset) => {
-              for (let i = 0; i < count; i++) {
-                newLines.push({
-                  points: [
-                    startX + i * offset,
-                    startY + i * offset,
-                    endX + i * offset,
-                    endY + i * offset,
-                  ],
-                  stroke: "black",
-                  strokeWidth: 4,
-                  id: `${newId}_${i}`,
-                });
-              }
             };
 
             switch (relationType) {
@@ -789,7 +861,7 @@ const Canvas = () => {
                 createParallelLines(2, 10);
                 break;
               case 2: // Fusión
-                createParallelLines(3, 10);
+                createParallelLines(3, 15);
                 break;
               case 3: // Conflicto
                 createConflictLine();
@@ -801,7 +873,7 @@ const Canvas = () => {
                 createBreakLine();
                 break;
               case 6: // Fusion-Conflicto
-                createFusionConflicto(3, 10);
+                createFusionConflicto(3, 15);
                 break;
 
               default:
@@ -814,12 +886,19 @@ const Canvas = () => {
             }
 
             currentLines.push(...newLines);
+            console.log(newLines);
             setLines(currentLines);
-            setActionHistory([
+            const lineIds = newLines.map((line) => line.id);
+            console.log(lineIds);
+            const updatedHistory = [
               ...actionHistory,
-              { type: "add", target: "line", id: newLines.id },
-            ]);
-
+              {
+                type: "add",
+                target: "line",
+                ids: lineIds,
+              },
+            ];
+            setActionHistory(updatedHistory);
             setStartCoords({ x: null, y: null });
             setcreatingLineRelation(false);
           }
