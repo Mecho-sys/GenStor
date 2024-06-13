@@ -1,11 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import {
   Typography,
   Box,
-  Grid,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -17,13 +16,17 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import SpeedDial from "@mui/material/SpeedDial";
+import SpeedDialAction from "@mui/material/SpeedDialAction";
+import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
 import UndoIcon from "@mui/icons-material/Undo";
+import DownloadIcon from "@mui/icons-material/Download";
+import LogoutIcon from "@mui/icons-material/Logout";
 import SidebarMenu from "./SideBarMenu";
 import KonvaStage from "./KonvaStage";
-import Konva from "konva";
 
 const initialFigures = [];
 const initialText = [];
@@ -33,11 +36,11 @@ const Canvas = () => {
   const { projectId } = useParams();
   const stageRef = useRef(null);
   const [actionHistory, setActionHistory] = useState([]);
+  const navigate = useNavigate();
 
   const [figures, setFigures] = React.useState(initialFigures);
   const [selectedId, selectShape] = React.useState(null);
   const [openTextDialog, setOpenTextDialog] = React.useState(false);
-  const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
 
   // Texto:
   const [texts, setTexts] = React.useState(initialText);
@@ -60,11 +63,15 @@ const Canvas = () => {
     const fetchProject = async () => {
       try {
         const response = await axios.get(`http://localhost:4000/getProyects`);
-        const project = response.data.data.find((p) => p.id === projectId);
-        if (project && project.edit_file) {
-          const stage = Konva.Node.create(project.edit_file, "container");
-          stageRef.current.destroyChildren();
-          stageRef.current.add(stage);
+        const project = response.data.data.find(
+          (p) => p.id.toString() === projectId.toString()
+        );
+        if (project) {
+          setFigures(project.figures || []);
+          setTexts(project.texts || []);
+          setLines(project.lines || []);
+        } else {
+          console.log("No se encontró el proyecto con el id:", projectId);
         }
       } catch (error) {
         console.error("Error al obtener el proyecto:", error);
@@ -713,8 +720,8 @@ const Canvas = () => {
             };
 
             const createBreakLine = () => {
-              const segments = 5; // Number of segments
-              const gapRatio = 0.2; // Ratio of the gap relative to the total length
+              const segments = 5;
+              const gapRatio = 0.2;
               const totalLength = Math.sqrt(
                 Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2)
               );
@@ -818,9 +825,13 @@ const Canvas = () => {
           }
         } else {
           console.log("No se hizo clic en una figura válida");
+          setStartCoords({ x: null, y: null });
+          setcreatingLineRelation(false);
         }
       } else {
         console.log("Se hizo clic en un área vacía");
+        setStartCoords({ x: null, y: null });
+        setcreatingLineRelation(false);
       }
     } else {
       if (clickedOnEmpty) {
@@ -1128,14 +1139,6 @@ const Canvas = () => {
     setOpenTextDialog(false);
   };
 
-  const handleClickOpenSaveDialog = () => {
-    setOpenSaveDialog(true);
-  };
-
-  const handleCloseSaveDialog = () => {
-    setOpenSaveDialog(false);
-  };
-
   const handleTextChange = (e) => {
     setTextPhrase(e.target.value);
   };
@@ -1192,15 +1195,17 @@ const Canvas = () => {
   };
 
   const handleSave = async () => {
-    const stageJson = stageRef.current.toJSON();
-    console.log(stageJson);
+    //const stageJson = stageRef.current.toJSON();
     try {
       await axios.post(`http://localhost:4000/editProyect`, {
         id: projectId,
         data: {
-          edit_file: stageJson,
+          figures: figures,
+          lines: lines,
+          texts: texts,
         },
       });
+      console.log("Proyecto guardado exitosamente");
     } catch (error) {
       console.error("Error al editar el proyecto:", error);
     }
@@ -1208,9 +1213,9 @@ const Canvas = () => {
 
   const handleSaveAndExit = () => {
     handleSave();
-    console.log("Se cierra el dialog y se redirige al home");
 
-    handleCloseSaveDialog();
+    navigate(`/home`);
+    console.log("Se cierra el dialog y se redirige al home");
   };
 
   const handleDownload = async () => {
@@ -1258,10 +1263,36 @@ const Canvas = () => {
     setActionHistory(updatedHistory);
   };
 
+  const actions = [
+    {
+      icon: <AddIcon />,
+      name: "Agregar Texto",
+      onClick: handleClickOpenTextDialog,
+      color: "lightblue",
+    },
+    {
+      icon: <SaveIcon />,
+      name: "Guardar",
+      onClick: handleSave,
+      color: "lightgreen",
+    },
+    {
+      icon: <DownloadIcon />,
+      name: "Descargar como png",
+      onClick: handleDownload,
+      color: "lightgreen",
+    },
+    {
+      icon: <LogoutIcon />,
+      name: "Salir",
+      onClick: handleSaveAndExit,
+      color: "lightgreen",
+    },
+  ];
   return (
     <div>
-      <Grid container>
-        <Grid item xs={2}>
+      <div style={{ display: "flex", height: "100vh" }}>
+        <div style={{ flex: "0 0 20%", overflowY: "auto" }}>
           <SidebarMenu
             addRectangle={addRectangle}
             addCrossRectangle={addCrossedRectangle}
@@ -1276,8 +1307,8 @@ const Canvas = () => {
             addCrossedCircle={addCrossedCircle}
             addDobleRectangle={addDobleRectangle}
           />
-        </Grid>
-        <Grid item xs={10}>
+        </div>
+        <div style={{ flex: "1 1 80%", height: "100%" }}>
           <div id="container" style={{ height: "100%", width: "100%" }}>
             <KonvaStage
               lines={lines}
@@ -1292,21 +1323,36 @@ const Canvas = () => {
               ref={stageRef}
             />
           </div>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
+      <SpeedDial
+        ariaLabel="SpeedDial example"
+        style={{ position: "fixed", bottom: "20px", right: "20px" }}
+        icon={<SpeedDialIcon />}
+      >
+        {actions.map((action) => (
+          <SpeedDialAction
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+            onClick={action.onClick}
+            sx={{ backgroundColor: action.color }}
+          />
+        ))}
+      </SpeedDial>
       <IconButton
-        onClick={handleClickOpenTextDialog}
+        onClick={handleUndo}
         style={{
           backgroundColor: "lightblue",
           borderRadius: "50%",
-          width: "60px",
-          height: "60px",
+          width: "58px",
+          height: "58px",
           position: "fixed",
           bottom: "20px",
-          right: "20px",
+          right: "100px",
         }}
       >
-        <AddIcon />
+        <UndoIcon />
       </IconButton>
       <Dialog open={openTextDialog} onClose={handleCloseTextDialog}>
         <DialogTitle>Agregar Texto</DialogTitle>
@@ -1355,64 +1401,6 @@ const Canvas = () => {
           <Button onClick={addText}>Agregar</Button>
         </DialogActions>
       </Dialog>
-      <IconButton
-        onClick={handleClickOpenSaveDialog}
-        style={{
-          backgroundColor: "lightgreen",
-          borderRadius: "50%",
-          width: "60px",
-          height: "60px",
-          position: "fixed",
-          bottom: "100px",
-          right: "20px",
-        }}
-      >
-        <SaveIcon />
-      </IconButton>
-      <Dialog open={openSaveDialog} onClose={handleCloseSaveDialog}>
-        <DialogTitle>Opciones de Guardado</DialogTitle>
-        <DialogContent>
-          <Typography>¿Qué acción deseas realizar?</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDownload} variant="contained" color="primary">
-            Descargar
-          </Button>
-          <Button onClick={handleSave} variant="contained" color="primary">
-            Guardar
-          </Button>
-          <Button
-            onClick={handleSaveAndExit}
-            variant="contained"
-            color="primary"
-            component={Link}
-            to="/home"
-          >
-            Guardar y Salir
-          </Button>
-          <Button
-            onClick={handleCloseSaveDialog}
-            variant="contained"
-            color="secondary"
-          >
-            Cancelar
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <IconButton
-        onClick={handleUndo}
-        style={{
-          backgroundColor: "lightblue",
-          borderRadius: "50%",
-          width: "60px",
-          height: "60px",
-          position: "fixed",
-          bottom: "20px",
-          right: "100px",
-        }}
-      >
-        <UndoIcon />
-      </IconButton>
     </div>
   );
 };
