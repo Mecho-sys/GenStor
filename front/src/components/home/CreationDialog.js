@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Dialog,
@@ -43,6 +43,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
 
   const [personas_nucleo, setPersonasNucleo] = useState([]);
   const [personas_fuera_nucleo, setPersonasFueraNucleo] = useState([]);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -134,9 +135,22 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
         "http://localhost:4000/addProyect",
         dataToSubmit
       );
-
       console.log("Respuesta del servidor:", response.data);
-      console.log("Se pasó del diálogo al editor");
+
+      if (response.status === 200) {
+        const projectsResponse = await axios.get(
+          "http://localhost:4000/getProyects"
+        );
+        const projects = projectsResponse.data.data;
+        if (projects.length > 0) {
+          const lastProject = projects.reduce((latest, current) => {
+            return new Date(latest.created_at) > new Date(current.created_at)
+              ? latest
+              : current;
+          });
+          navigate(`/editor/${lastProject.id}`);
+        }
+      }
     } catch (error) {
       console.error("Error al enviar los datos:", error);
     }
@@ -579,12 +593,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
         <Button onClick={() => setIsDialogOpen(false)} color="primary">
           Cancelar
         </Button>
-        <Button
-          onClick={handleSubmit}
-          color="primary"
-          component={Link}
-          to="/editor"
-        >
+        <Button onClick={handleSubmit} color="primary">
           Crear Genograma
         </Button>
       </DialogActions>
