@@ -16,6 +16,15 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 import SpeedDial from "@mui/material/SpeedDial";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
 import SpeedDialIcon from "@mui/material/SpeedDialIcon";
@@ -25,6 +34,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import UndoIcon from "@mui/icons-material/Undo";
 import DownloadIcon from "@mui/icons-material/Download";
 import LogoutIcon from "@mui/icons-material/Logout";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import SidebarMenu from "./SideBarMenu";
 import KonvaStage from "./KonvaStage";
 
@@ -41,6 +51,11 @@ const Canvas = () => {
   const [figures, setFigures] = React.useState(initialFigures);
   const [selectedId, selectShape] = React.useState(null);
   const [openTextDialog, setOpenTextDialog] = React.useState(false);
+
+  //información de Familia
+  const [nucleoFamData, setNucleoFamData] = React.useState([]);
+  const [fNucleoFamData, setFNucleoFamData] = React.useState([]);
+  const [openFamDialog, setOpenFamDialog] = React.useState(false);
 
   // Texto:
   const [texts, setTexts] = React.useState(initialText);
@@ -70,6 +85,8 @@ const Canvas = () => {
           setFigures(project.figures || []);
           setTexts(project.texts || []);
           setLines(project.lines || []);
+          setFNucleoFamData(project.personas_fuera_nucleo || []);
+          setNucleoFamData(project.personas_nucleo || []);
         } else {
           console.log("No se encontró el proyecto con el id:", projectId);
         }
@@ -1342,6 +1359,14 @@ const Canvas = () => {
     setActionHistory(updatedHistory);
   };
 
+  const handleViewFamily = () => {
+    setOpenFamDialog(true);
+  };
+
+  const handleCloseFamDialog = () => {
+    setOpenFamDialog(false);
+  };
+
   const actions = [
     {
       icon: <AddIcon />,
@@ -1359,6 +1384,12 @@ const Canvas = () => {
       icon: <DownloadIcon />,
       name: "Descargar como png",
       onClick: handleDownload,
+      color: "lightgreen",
+    },
+    {
+      icon: <PeopleAltIcon />,
+      name: "Informacion de la familia",
+      onClick: handleViewFamily,
       color: "lightgreen",
     },
     {
@@ -1478,6 +1509,78 @@ const Canvas = () => {
         <DialogActions>
           <Button onClick={handleCloseTextDialog}>Cancelar</Button>
           <Button onClick={addText}>Agregar</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openFamDialog}
+        onClose={handleCloseFamDialog}
+        PaperProps={{ style: { minWidth: "80vw", maxHeight: "80vh" } }}
+      >
+        <DialogTitle>Información Familiar</DialogTitle>
+        <DialogContent>
+          <DialogTitle>Núcleo Familiar</DialogTitle>
+          <TableContainer component={Paper}>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Apellido Paterno</TableCell>
+                  <TableCell>Apellido Materno</TableCell>
+                  <TableCell>Género</TableCell>
+                  <TableCell>Estado Civil</TableCell>
+                  <TableCell>Parentesco</TableCell>
+                  <TableCell>RUT</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Array.isArray(nucleoFamData) &&
+                  nucleoFamData.map((person, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{person.nombres}</TableCell>
+                      <TableCell>{person.appaterno}</TableCell>
+                      <TableCell>{person.apmaterno}</TableCell>
+                      <TableCell>{person.genero}</TableCell>
+                      <TableCell>{person.ecivil}</TableCell>
+                      <TableCell>{person.parentesco}</TableCell>
+                      <TableCell>{person.rut}</TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <DialogTitle>Fuera del núcleo Familiar</DialogTitle>
+          <TableContainer component={Paper}>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Apellido Paterno</TableCell>
+                  <TableCell>Apellido Materno</TableCell>
+                  <TableCell>Género</TableCell>
+                  <TableCell>Estado Civil</TableCell>
+                  <TableCell>Parentesco</TableCell>
+                  <TableCell>RUT</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Array.isArray(fNucleoFamData) &&
+                  fNucleoFamData.map((person, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{person.nombres}</TableCell>
+                      <TableCell>{person.appaterno}</TableCell>
+                      <TableCell>{person.apmaterno}</TableCell>
+                      <TableCell>{person.genero}</TableCell>
+                      <TableCell>{person.ecivil}</TableCell>
+                      <TableCell>{person.parentesco}</TableCell>
+                      <TableCell>{person.rut}</TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseFamDialog}>Cerrar</Button>
         </DialogActions>
       </Dialog>
     </div>
