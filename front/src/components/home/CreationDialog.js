@@ -33,6 +33,30 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+const parentescoOptions = {
+  Masculino: ["Jefe de familia", "Marido", "Abuelo", "Padre", "Hijo", "Nieto"],
+  Femenino: ["Jefa de familia", "Esposa", "Abuela", "Madre", "Hija", "Nieta"],
+};
+
+const estadoCivilOptions = {
+  Masculino: [
+    "Soltero",
+    "Con Pareja",
+    "Casado",
+    "Separado",
+    "Divorciado",
+    "Viudo",
+  ],
+  Femenino: [
+    "Soltera",
+    "Con Pareja",
+    "Casada",
+    "Separada",
+    "Divorciada",
+    "Viuda",
+  ],
+};
+
 const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -65,6 +89,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
         genero: "",
         parentesco: "",
         ecivil: "",
+        pareja: "",
         nucleo: "si",
       },
     ]);
@@ -81,6 +106,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
         genero: "",
         parentesco: "",
         ecivil: "",
+        pareja: "",
         nucleo: "no",
       },
     ]);
@@ -155,6 +181,55 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
       console.error("Error al enviar los datos:", error);
     }
   };
+
+  const renderParentescoOptions = (genero) => {
+    return parentescoOptions[genero]?.map((option) => (
+      <MenuItem key={option} value={option}>
+        {option}
+      </MenuItem>
+    ));
+  };
+
+  const renderEstadoCivilOptions = (genero) => {
+    return estadoCivilOptions[genero]?.map((option) => (
+      <MenuItem key={option} value={option}>
+        {option}
+      </MenuItem>
+    ));
+  };
+
+  const renderParejaSelect = (persona, index, nucleo) => {
+    const personas = nucleo === "si" ? personas_nucleo : personas_fuera_nucleo;
+    const otrasPersonas = personas.filter((_, i) => i !== index);
+
+    return (
+      <Grid item xs={3}>
+        <FormControl variant="standard" sx={{ minWidth: 120 }}>
+          <InputLabel id={`pareja-select-label-${index}-${nucleo}`}>
+            Pareja
+          </InputLabel>
+          <Select
+            labelId={`pareja-select-label-${index}-${nucleo}`}
+            id={`pareja-select-${index}-${nucleo}`}
+            value={persona.pareja}
+            onChange={(e) =>
+              handleChangePersonSelect(index, nucleo, "pareja", e.target.value)
+            }
+            label="Pareja"
+          >
+            {otrasPersonas.map((p, i) => (
+              <MenuItem key={i} value={p.nombres}>
+                {p.nombres}
+              </MenuItem>
+            ))}
+            <MenuItem value={"Otro"}>Otro</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
+    );
+  };
+
+  const todasLasPersonas = [...personas_nucleo, ...personas_fuera_nucleo];
 
   return (
     <Dialog
@@ -352,19 +427,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                           }
                           label="Parentesco"
                         >
-                          <MenuItem value={"Jefe de familia"}>
-                            Jefe de familia
-                          </MenuItem>
-                          <MenuItem value={"Marido"}>Marido</MenuItem>
-                          <MenuItem value={"Esposa"}>Esposa</MenuItem>
-                          <MenuItem value={"Abuelo"}>Abuelo</MenuItem>
-                          <MenuItem value={"Abuela"}>Abuela</MenuItem>
-                          <MenuItem value={"Padre"}>Padre</MenuItem>
-                          <MenuItem value={"Madre"}>Madre</MenuItem>
-                          <MenuItem value={"Hijo"}>Hijo</MenuItem>
-                          <MenuItem value={"Hija"}>Hija</MenuItem>
-                          <MenuItem value={"Nieto"}>Nieto</MenuItem>
-                          <MenuItem value={"Nieta"}>Nieta</MenuItem>
+                          {renderParentescoOptions(persona.genero)}
                         </Select>
                       </FormControl>
                     </Grid>
@@ -387,14 +450,14 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                           }
                           label="Estado Civil"
                         >
-                          <MenuItem value={"Soltero"}>Soltero</MenuItem>
-                          <MenuItem value={"Casado"}>Casado</MenuItem>
-                          <MenuItem value={"Separado"}>Separado</MenuItem>
-                          <MenuItem value={"Divorciado"}>Divorciado</MenuItem>
-                          <MenuItem value={"Viudo"}>Viudo</MenuItem>
+                          {renderEstadoCivilOptions(persona.genero)}
                         </Select>
                       </FormControl>
                     </Grid>
+                    {(persona.ecivil === "Casado" ||
+                      persona.ecivil === "Casada" ||
+                      persona.ecivil === "Con Pareja") &&
+                      renderParejaSelect(persona, index, "si")}
                     <Grid item xs={3}>
                       <IconButton
                         onClick={() => handleRemovePerson(index, "si")}
@@ -532,19 +595,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                           }
                           label="Parentesco"
                         >
-                          <MenuItem value={"Jefe de familia"}>
-                            Jefe de familia
-                          </MenuItem>
-                          <MenuItem value={"Marido"}>Marido</MenuItem>
-                          <MenuItem value={"Esposa"}>Esposa</MenuItem>
-                          <MenuItem value={"Abuelo"}>Abuelo</MenuItem>
-                          <MenuItem value={"Abuela"}>Abuela</MenuItem>
-                          <MenuItem value={"Padre"}>Padre</MenuItem>
-                          <MenuItem value={"Madre"}>Madre</MenuItem>
-                          <MenuItem value={"Hijo"}>Hijo</MenuItem>
-                          <MenuItem value={"Hija"}>Hija</MenuItem>
-                          <MenuItem value={"Nieto"}>Nieto</MenuItem>
-                          <MenuItem value={"Nieta"}>Nieta</MenuItem>
+                          {renderParentescoOptions(persona.genero)}
                         </Select>
                       </FormControl>
                     </Grid>
@@ -567,14 +618,14 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                           }
                           label="Estado Civil"
                         >
-                          <MenuItem value={"Soltero"}>Soltero</MenuItem>
-                          <MenuItem value={"Casado"}>Casado</MenuItem>
-                          <MenuItem value={"Separado"}>Separado</MenuItem>
-                          <MenuItem value={"Divorciado"}>Divorciado</MenuItem>
-                          <MenuItem value={"Viudo"}>Viudo</MenuItem>
+                          {renderEstadoCivilOptions(persona.genero)}
                         </Select>
                       </FormControl>
                     </Grid>
+                    {(persona.ecivil === "Casado" ||
+                      persona.ecivil === "Casada" ||
+                      persona.ecivil === "Con Pareja") &&
+                      renderParejaSelect(persona, index, "no")}
                     <Grid item xs={3}>
                       <IconButton
                         onClick={() => handleRemovePerson(index, "no")}

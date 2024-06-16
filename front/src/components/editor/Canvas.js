@@ -1529,6 +1529,7 @@ const Canvas = () => {
                   <TableCell>Género</TableCell>
                   <TableCell>Estado Civil</TableCell>
                   <TableCell>Parentesco</TableCell>
+                  <TableCell>Pareja de</TableCell>
                   <TableCell>RUT</TableCell>
                 </TableRow>
               </TableHead>
@@ -1542,6 +1543,7 @@ const Canvas = () => {
                       <TableCell>{person.genero}</TableCell>
                       <TableCell>{person.ecivil}</TableCell>
                       <TableCell>{person.parentesco}</TableCell>
+                      <TableCell>{person.pareja}</TableCell>
                       <TableCell>{person.rut}</TableCell>
                     </TableRow>
                   ))}
