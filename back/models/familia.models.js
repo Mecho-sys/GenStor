@@ -5,7 +5,9 @@ export const getFamilias = async () => {
   let connection;
   try {
     connection = await createConnection();
-    const [rows, fields] = await connection.query("SELECT * FROM familias");
+    const [rows, fields] = await connection.query(
+      "SELECT id, rut, nombres, appaterno, apmaterno, genero, parentesco, ecivil FROM  familias;"
+    );
     return rows;
   } catch (err) {
     console.error("Error fetching familias:", err);

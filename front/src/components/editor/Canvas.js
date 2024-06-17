@@ -1396,13 +1396,11 @@ const Canvas = () => {
 
   const createFiguresFromData = () => {
     const xOffset = 100;
-    const yPosition0gen = 0;
-    const yPosition1gen = 100;
-    const yPosition2gen = 300;
-    const yPosition3gen = 500;
-    const yPosition4gen = 700;
+    const yPosition1gen = 50;
+    const yPosition2gen = 250;
+    const yPosition3gen = 450;
+    const yPosition4gen = 650;
 
-    let gen0Count = 0;
     let gen1Count = 0;
     let gen2Count = 0;
     let gen3Count = 0;
@@ -1411,26 +1409,8 @@ const Canvas = () => {
     const newActionHistory = [];
 
     nucleoFamData.forEach((person, index) => {
-      if (person.genero === "Masculino") {
-        if (person.parentesco === "Abuelo") {
-          const x = xOffset + gen0Count * 150;
-          gen0Count++;
-
-          const newId = `rect${newFigures.length + 1}`;
-          const newRect = {
-            x: x,
-            y: yPosition0gen - 50,
-            width: 100,
-            height: 100,
-            fill: "white",
-            stroke: "black",
-            strokeWidth: 4,
-            figure: "rectangle",
-            id: newId,
-          };
-          newFigures.push(newRect);
-          newActionHistory.push({ type: "add", target: "figure", id: newId });
-        } else if (person.parentesco === "Padre") {
+      if (person.genero === "MASCULINO") {
+        if (person.parentesco === "abuelo") {
           const x = xOffset + gen1Count * 150;
           gen1Count++;
 
@@ -1449,10 +1429,11 @@ const Canvas = () => {
           newFigures.push(newRect);
           newActionHistory.push({ type: "add", target: "figure", id: newId });
         } else if (
-          person.parentesco === "Jefe de familia" ||
+          person.parentesco === "Jefe de Hogar" ||
           person.parentesco === "Hermano" ||
           person.parentesco === "Esposo" ||
-          person.parentesco === "Cuñado"
+          person.parentesco === "Cuñado" ||
+          person.parentesco === "Padre"
         ) {
           const x = xOffset + gen2Count * 150;
           gen2Count++;
@@ -1511,25 +1492,8 @@ const Canvas = () => {
           newFigures.push(newRect);
           newActionHistory.push({ type: "add", target: "figure", id: newId });
         }
-      } else if (person.genero === "Femenino") {
-        if (person.parentesco === "Abuela") {
-          const x = xOffset + gen0Count * 150;
-          gen0Count++;
-
-          const newId = `circle${newFigures.length + 1}`;
-          const newCircle = {
-            x: x + 50,
-            y: yPosition0gen,
-            radius: 50,
-            fill: "white",
-            stroke: "black",
-            strokeWidth: 4,
-            figure: "circle",
-            id: newId,
-          };
-          newFigures.push(newCircle);
-          newActionHistory.push({ type: "add", target: "figure", id: newId });
-        } else if (person.parentesco === "Madre") {
+      } else if (person.genero === "FEMENINO") {
+        if (person.parentesco === "abuela") {
           const x = xOffset + gen1Count * 150;
           gen1Count++;
 
@@ -1549,7 +1513,8 @@ const Canvas = () => {
         } else if (
           person.parentesco === "Esposa" ||
           person.parentesco === "Hermana" ||
-          person.parentesco === "Cuñada"
+          person.parentesco === "Cuñada" ||
+          person.parentesco === "Madre"
         ) {
           const x = xOffset + gen2Count * 150;
           gen2Count++;
@@ -1568,8 +1533,8 @@ const Canvas = () => {
           newFigures.push(newCircle);
           newActionHistory.push({ type: "add", target: "figure", id: newId });
         } else if (
-          person.parentesco === "Hija" ||
-          person.parentesco === "Ahijada"
+          person.parentesco === "Hijo" ||
+          person.parentesco === "Ahijado"
         ) {
           const x = xOffset + gen3Count * 150;
           gen3Count++;
@@ -1587,7 +1552,7 @@ const Canvas = () => {
           };
           newFigures.push(newCircle);
           newActionHistory.push({ type: "add", target: "figure", id: newId });
-        } else if (person.parentesco === "Nieta") {
+        } else if (person.parentesco === "Nieto") {
           const x = xOffset + gen4Count * 150;
           gen4Count++;
 

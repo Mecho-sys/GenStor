@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -34,8 +34,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const parentescoOptions = {
-  Masculino: [
-    "Jefe de familia",
+  MASCULINO: [
+    "Jefe de Hogar",
     "Marido",
     "Abuelo",
     "Padre",
@@ -45,35 +45,16 @@ const parentescoOptions = {
     "Ahijado",
     "Nieto",
   ],
-  Femenino: [
-    "Jefa de familia",
+  FEMENINO: [
+    "Jefa de Hogar",
     "Esposa",
     "Abuela",
     "Madre",
     "Hermana",
     "Cuñada",
-    "Hija",
-    "Ahijada",
-    "Nieta",
-  ],
-};
-
-const estadoCivilOptions = {
-  Masculino: [
-    "Soltero",
-    "Con Pareja",
-    "Casado",
-    "Separado",
-    "Divorciado",
-    "Viudo",
-  ],
-  Femenino: [
-    "Soltera",
-    "Con Pareja",
-    "Casada",
-    "Separada",
-    "Divorciada",
-    "Viuda",
+    "Hijo",
+    "Ahijado",
+    "Nieto",
   ],
 };
 
@@ -87,15 +68,26 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
 
   const [personas_nucleo, setPersonasNucleo] = useState([]);
   const [personas_fuera_nucleo, setPersonasFueraNucleo] = useState([]);
+  const [familiasData, setFamiliasData] = useState([]);
+  const uniqueIds = [...new Set(familiasData.map((familia) => familia.id))];
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/getFamilias");
+        setFamiliasData(response.data.data);
+      } catch (error) {
+        console.error("Error al obtener los proyectos:", error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  const handleChangeSelect = (fieldName, value) => {
-    setFormData({ ...formData, [fieldName]: value });
   };
 
   const handleAddPerson = () => {
@@ -213,14 +205,6 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
     ));
   };
 
-  const renderEstadoCivilOptions = (genero) => {
-    return estadoCivilOptions[genero]?.map((option) => (
-      <MenuItem key={option} value={option}>
-        {option}
-      </MenuItem>
-    ));
-  };
-
   const renderParejaSelect = (persona, index, nucleo) => {
     const personasList =
       nucleo === "si" ? personas_nucleo : personas_fuera_nucleo;
@@ -249,6 +233,13 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
         </Select>
       </FormControl>
     );
+  };
+
+  const handleFamilySelect = (id) => {
+    const selectedFamilyMembers = familiasData.filter(
+      (familia) => familia.id === id
+    );
+    setPersonasNucleo(selectedFamilyMembers);
   };
 
   return (
@@ -314,20 +305,28 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
               <Grid item xs={6}>
                 <Item variant="outlined">
                   <FormControl variant="standard" sx={{ minWidth: 200 }}>
-                    <InputLabel id="cod-familia-select-label">
+                    <InputLabel id="fam-code-select-label">
                       Codigo de Familia
                     </InputLabel>
                     <Select
-                      labelId="cod-familia-select-label"
-                      id="cod-familia-select-label"
-                      value={formData.cod_familia}
-                      onChange={(e) =>
-                        handleChangeSelect("cod_familia", e.target.value)
-                      }
-                      label="cod_familia"
+                      labelId="fam-code-select-label"
+                      id="fam-code-select-label"
+                      value={formData.fam_code}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          fam_code: e.target.value,
+                        });
+                        handleFamilySelect(e.target.value);
+                      }}
+                      label="Código de Familia"
                     >
-                      <MenuItem value={"sin codigo"}>sin codigo</MenuItem>
-                      <MenuItem value={"10"}>10</MenuItem>
+                      <MenuItem value={""}>sin codigo</MenuItem>
+                      {uniqueIds.map((id) => (
+                        <MenuItem key={id} value={id}>
+                          {id}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Item>
@@ -358,8 +357,6 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                         id={`rut-${index}`}
                         label="Rut"
                         name="rut"
-                        autoComplete="rut"
-                        autoFocus
                         value={persona.rut}
                         onChange={(e) => handleChangePerson(index, "si", e)}
                       />
@@ -372,8 +369,6 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                         id="nombres"
                         label="Nombres"
                         name="nombres"
-                        autoComplete="nombres"
-                        autoFocus
                         value={persona.nombres}
                         onChange={(e) => handleChangePerson(index, "si", e)}
                       />
@@ -386,8 +381,6 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                         id="appaterno"
                         label="Apellido Paterno"
                         name="appaterno"
-                        autoComplete="appaterno"
-                        autoFocus
                         value={persona.appaterno}
                         onChange={(e) => handleChangePerson(index, "si", e)}
                       />
@@ -400,8 +393,6 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                         id="apmaterno"
                         label="Apellido Materno"
                         name="apmaterno"
-                        autoComplete="apmaterno"
-                        autoFocus
                         value={persona.apmaterno}
                         onChange={(e) => handleChangePerson(index, "si", e)}
                       />
@@ -423,8 +414,8 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                           }
                           label="Género"
                         >
-                          <MenuItem value={"Masculino"}>Masculino</MenuItem>
-                          <MenuItem value={"Femenino"}>Femenino</MenuItem>
+                          <MenuItem value={"MASCULINO"}>Masculino</MenuItem>
+                          <MenuItem value={"FEMENINO"}>Femenino</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
@@ -470,12 +461,18 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                           }
                           label="Estado Civil"
                         >
-                          {renderEstadoCivilOptions(persona.genero)}
+                          <MenuItem value={"Soltero(a)"}>Soltero(a)</MenuItem>
+                          <MenuItem value={"Con Pareja"}>Con Pareja</MenuItem>
+                          <MenuItem value={"Casado(a)"}>Casado(a)</MenuItem>
+                          <MenuItem value={"Separado(a)"}>Separado(a)</MenuItem>
+                          <MenuItem value={"Divorciado(a)"}>
+                            Divorciado(a)
+                          </MenuItem>
+                          <MenuItem value={"Viudo(a)"}>Viudo(a)</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
-                    {(persona.ecivil === "Casado" ||
-                      persona.ecivil === "Casada" ||
+                    {(persona.ecivil === "Casado(a)" ||
                       persona.ecivil === "Con Pareja") &&
                       renderParejaSelect(persona, index, "si")}
                     <Grid item xs={3}>
@@ -638,7 +635,14 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                           }
                           label="Estado Civil"
                         >
-                          {renderEstadoCivilOptions(persona.genero)}
+                          <MenuItem value={"Soltero(a)"}>Soltero(a)</MenuItem>
+                          <MenuItem value={"Con Pareja"}>Con Pareja</MenuItem>
+                          <MenuItem value={"Casado(a)"}>Casado(a)</MenuItem>
+                          <MenuItem value={"Separado(a)"}>Separado(a)</MenuItem>
+                          <MenuItem value={"Divorciado(a)"}>
+                            Divorciado(a)
+                          </MenuItem>
+                          <MenuItem value={"Viudo(a)"}>Viudo(a)</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
