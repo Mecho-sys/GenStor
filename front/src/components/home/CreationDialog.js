@@ -69,6 +69,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
   const [personas_nucleo, setPersonasNucleo] = useState([]);
   const [personas_fuera_nucleo, setPersonasFueraNucleo] = useState([]);
   const [familiasData, setFamiliasData] = useState([]);
+  const [pacientesData, setPacientesData] = useState([]);
   const uniqueIds = [...new Set(familiasData.map((familia) => familia.id))];
   const navigate = useNavigate();
 
@@ -77,6 +78,12 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
       try {
         const response = await axios.get("http://localhost:4000/getFamilias");
         setFamiliasData(response.data.data);
+      } catch (error) {
+        console.error("Error al obtener los proyectos:", error);
+      }
+      try {
+        const response = await axios.get("http://localhost:4000/getPacientes");
+        setPacientesData(response.data.data);
       } catch (error) {
         console.error("Error al obtener los proyectos:", error);
       }
@@ -242,6 +249,32 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
     setPersonasNucleo(selectedFamilyMembers);
   };
 
+  const handleRutChange = (index, nucleo, e) => {
+    const { value } = e.target;
+    handleChangePerson(index, nucleo, e);
+
+    const paciente = pacientesData.find((p) => p.rut === value);
+
+    if (paciente) {
+      const updatedPersonas =
+        nucleo === "si" ? [...personas_nucleo] : [...personas_fuera_nucleo];
+      updatedPersonas[index] = {
+        ...updatedPersonas[index],
+        rut: paciente.rut,
+        nombres: paciente.nombre,
+        appaterno: paciente.apaterno,
+        apmaterno: paciente.amaterno,
+        genero: paciente.sexo,
+        ecivil: paciente.ecivil,
+      };
+      if (nucleo === "si") {
+        setPersonasNucleo(updatedPersonas);
+      } else {
+        setPersonasFueraNucleo(updatedPersonas);
+      }
+    }
+  };
+
   return (
     <Dialog
       open={isDialogOpen}
@@ -358,7 +391,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                         label="Rut"
                         name="rut"
                         value={persona.rut}
-                        onChange={(e) => handleChangePerson(index, "si", e)}
+                        onChange={(e) => handleRutChange(index, "si", e)}
                       />
                     </Grid>
                     <Grid item xs={3}>
@@ -511,7 +544,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                   aria-controls={`panel${index + 1}-content`}
                   id={`panel${index + 1}-header`}
                 >
-                  Añadir Persona {persona.id}
+                  Persona {persona.id}
                 </AccordionSummary>
                 <AccordionDetails>
                   <Grid container spacing={2}>
@@ -526,7 +559,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                         autoComplete="rut"
                         autoFocus
                         value={persona.rut}
-                        onChange={(e) => handleChangePerson(index, "no", e)}
+                        onChange={(e) => handleRutChange(index, "no", e)}
                       />
                     </Grid>
                     <Grid item xs={3}>
@@ -588,8 +621,8 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                           }
                           label="Género"
                         >
-                          <MenuItem value={"Masculino"}>Masculino</MenuItem>
-                          <MenuItem value={"Femenino"}>Femenino</MenuItem>
+                          <MenuItem value={"MASCULINO"}>Masculino</MenuItem>
+                          <MenuItem value={"FEMENINO"}>Femenino</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
@@ -646,8 +679,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                         </Select>
                       </FormControl>
                     </Grid>
-                    {(persona.ecivil === "Casado" ||
-                      persona.ecivil === "Casada" ||
+                    {(persona.ecivil === "Casado(a)" ||
                       persona.ecivil === "Con Pareja") &&
                       renderParejaSelect(persona, index, "no")}
                     <Grid item xs={3}>
