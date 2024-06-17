@@ -693,34 +693,46 @@ const Canvas = () => {
             let endY = clickedShape.y() + (endIsRect ? 50 : 0);
 
             const createParallelLines = (count, offset) => {
+              const directionVectorX = endX - startX;
+              const directionVectorY = endY - startY;
+
+              // Calcular el vector perpendicular al vector director
+              const length = Math.sqrt(
+                directionVectorX * directionVectorX +
+                  directionVectorY * directionVectorY
+              );
+              const perpendicularVectorX = -directionVectorY / length;
+              const perpendicularVectorY = directionVectorX / length;
+
               if (count === 2) {
                 for (let i = 0; i < count; i++) {
+                  const offsetFactor = (i - Math.floor(count / 2)) * offset;
+                  const newStartX =
+                    startX + perpendicularVectorX * offsetFactor;
+                  const newStartY =
+                    startY + perpendicularVectorY * offsetFactor;
+                  const newEndX = endX + perpendicularVectorX * offsetFactor;
+                  const newEndY = endY + perpendicularVectorY * offsetFactor;
+
                   newLines.push({
-                    points: [
-                      startX + i * offset,
-                      startY + i * offset,
-                      endX + i * offset,
-                      endY + i * offset,
-                    ],
+                    points: [newStartX, newStartY, newEndX, newEndY],
                     stroke: "black",
                     strokeWidth: 4,
                     id: `${newId}_${i}`,
                   });
                 }
               } else if (count === 3) {
-                const sX = startX - offset;
-                const sY = startY - offset;
-                const eX = endX - offset;
-                const eY = endY - offset;
-
                 for (let i = 0; i < count; i++) {
+                  const offsetFactor = (i - Math.floor(count / 2)) * offset;
+                  const newStartX =
+                    startX + perpendicularVectorX * offsetFactor;
+                  const newStartY =
+                    startY + perpendicularVectorY * offsetFactor;
+                  const newEndX = endX + perpendicularVectorX * offsetFactor;
+                  const newEndY = endY + perpendicularVectorY * offsetFactor;
+
                   newLines.push({
-                    points: [
-                      sX + i * offset,
-                      sY + i * offset,
-                      eX + i * offset,
-                      eY + i * offset,
-                    ],
+                    points: [newStartX, newStartY, newEndX, newEndY],
                     stroke: "black",
                     strokeWidth: 4,
                     id: `${newId}_${i}`,
@@ -761,19 +773,26 @@ const Canvas = () => {
 
             const createFusionConflicto = (count, offset) => {
               createConflictLine();
-              const sX = startX - offset;
-              const sY = startY - offset;
-              const eX = endX - offset;
-              const eY = endY - offset;
+              const directionVectorX = endX - startX;
+              const directionVectorY = endY - startY;
+
+              // Calcular el vector perpendicular al vector director
+              const length = Math.sqrt(
+                directionVectorX * directionVectorX +
+                  directionVectorY * directionVectorY
+              );
+              const perpendicularVectorX = -directionVectorY / length;
+              const perpendicularVectorY = directionVectorX / length;
 
               for (let i = 0; i < count; i++) {
+                const offsetFactor = (i - Math.floor(count / 2)) * offset;
+                const newStartX = startX + perpendicularVectorX * offsetFactor;
+                const newStartY = startY + perpendicularVectorY * offsetFactor;
+                const newEndX = endX + perpendicularVectorX * offsetFactor;
+                const newEndY = endY + perpendicularVectorY * offsetFactor;
+
                 newLines.push({
-                  points: [
-                    sX + i * offset,
-                    sY + i * offset,
-                    eX + i * offset,
-                    eY + i * offset,
-                  ],
+                  points: [newStartX, newStartY, newEndX, newEndY],
                   stroke: "black",
                   strokeWidth: 4,
                   id: `${newId}_${i}`,

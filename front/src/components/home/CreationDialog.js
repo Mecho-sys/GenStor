@@ -345,7 +345,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                   aria-controls={`panel${index + 1}-content`}
                   id={`panel${index + 1}-header`}
                 >
-                  Añadir Persona {persona.id}
+                  Persona {persona.id}
                 </AccordionSummary>
                 <AccordionDetails>
                   <Grid container spacing={2}>
