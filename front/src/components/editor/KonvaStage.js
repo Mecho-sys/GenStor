@@ -44,6 +44,14 @@ const KonvaStage = forwardRef(
         onTouchStart={checkDeselect}
       >
         <Layer>
+          <Rect
+            x={0}
+            y={0}
+            width={window.innerWidth}
+            height={window.innerHeight}
+            fill="white"
+            listening={false} // Para que no interfiera con otros eventos
+          />
           {lines.map((line, i) => (
             <Line
               key={i}

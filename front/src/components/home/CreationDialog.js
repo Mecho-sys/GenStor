@@ -34,8 +34,28 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const parentescoOptions = {
-  Masculino: ["Jefe de familia", "Marido", "Abuelo", "Padre", "Hijo", "Nieto"],
-  Femenino: ["Jefa de familia", "Esposa", "Abuela", "Madre", "Hija", "Nieta"],
+  Masculino: [
+    "Jefe de familia",
+    "Marido",
+    "Abuelo",
+    "Padre",
+    "Hermano",
+    "Cuñado",
+    "Hijo",
+    "Ahijado",
+    "Nieto",
+  ],
+  Femenino: [
+    "Jefa de familia",
+    "Esposa",
+    "Abuela",
+    "Madre",
+    "Hermana",
+    "Cuñada",
+    "Hija",
+    "Ahijada",
+    "Nieta",
+  ],
 };
 
 const estadoCivilOptions = {
@@ -82,6 +102,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
     setPersonasNucleo([
       ...personas_nucleo,
       {
+        id: personas_nucleo.length + 1,
         rut: "",
         nombres: "",
         appaterno: "",
@@ -96,9 +117,11 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
   };
 
   const handleAddPersonOutside = () => {
+    const idOffset = personas_nucleo.length + 1;
     setPersonasFueraNucleo([
       ...personas_fuera_nucleo,
       {
+        id: idOffset + personas_fuera_nucleo.length,
         rut: "",
         nombres: "",
         appaterno: "",
@@ -199,37 +222,34 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
   };
 
   const renderParejaSelect = (persona, index, nucleo) => {
-    const personas = nucleo === "si" ? personas_nucleo : personas_fuera_nucleo;
-    const otrasPersonas = personas.filter((_, i) => i !== index);
-
+    const personasList =
+      nucleo === "si" ? personas_nucleo : personas_fuera_nucleo;
+    const parejaOptions = [
+      ...personas_nucleo,
+      ...personas_fuera_nucleo,
+      { id: "otro", nombres: "Otro" },
+    ];
     return (
-      <Grid item xs={3}>
-        <FormControl variant="standard" sx={{ minWidth: 120 }}>
-          <InputLabel id={`pareja-select-label-${index}-${nucleo}`}>
-            Pareja
-          </InputLabel>
-          <Select
-            labelId={`pareja-select-label-${index}-${nucleo}`}
-            id={`pareja-select-${index}-${nucleo}`}
-            value={persona.pareja}
-            onChange={(e) =>
-              handleChangePersonSelect(index, nucleo, "pareja", e.target.value)
-            }
-            label="Pareja"
-          >
-            {otrasPersonas.map((p, i) => (
-              <MenuItem key={i} value={p.nombres}>
-                {p.nombres}
-              </MenuItem>
-            ))}
-            <MenuItem value={"Otro"}>Otro</MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
+      <FormControl variant="standard" sx={{ minWidth: 120 }}>
+        <InputLabel id={`pareja-select-label-${index}`}>Pareja</InputLabel>
+        <Select
+          labelId={`pareja-select-label-${index}`}
+          id={`pareja-select-${index}`}
+          value={personasList[index].pareja}
+          onChange={(e) =>
+            handleChangePersonSelect(index, nucleo, "pareja", e.target.value)
+          }
+          label="Pareja"
+        >
+          {parejaOptions.map((option) => (
+            <MenuItem key={option.id} value={option.id}>
+              {option.nombres}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     );
   };
-
-  const todasLasPersonas = [...personas_nucleo, ...personas_fuera_nucleo];
 
   return (
     <Dialog
@@ -326,7 +346,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                   aria-controls={`panel${index + 1}-content`}
                   id={`panel${index + 1}-header`}
                 >
-                  Añadir Persona {index + 1}
+                  Añadir Persona {persona.id}
                 </AccordionSummary>
                 <AccordionDetails>
                   <Grid container spacing={2}>
@@ -494,7 +514,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                   aria-controls={`panel${index + 1}-content`}
                   id={`panel${index + 1}-header`}
                 >
-                  Añadir Persona {index + 1}
+                  Añadir Persona {persona.id}
                 </AccordionSummary>
                 <AccordionDetails>
                   <Grid container spacing={2}>
