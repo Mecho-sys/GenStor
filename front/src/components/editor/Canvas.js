@@ -35,6 +35,7 @@ import UndoIcon from "@mui/icons-material/Undo";
 import DownloadIcon from "@mui/icons-material/Download";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import AutoModeIcon from "@mui/icons-material/AutoMode";
 import SidebarMenu from "./SideBarMenu";
 import KonvaStage from "./KonvaStage";
 
@@ -56,6 +57,8 @@ const Canvas = () => {
   const [nucleoFamData, setNucleoFamData] = React.useState([]);
   const [fNucleoFamData, setFNucleoFamData] = React.useState([]);
   const [openFamDialog, setOpenFamDialog] = React.useState(false);
+  const [openCreateGenDialog, setOpenCreateGenDialog] = React.useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
   // Texto:
   const [texts, setTexts] = React.useState(initialText);
@@ -1367,6 +1370,251 @@ const Canvas = () => {
     setOpenFamDialog(false);
   };
 
+  const handleCreateGenDialog = () => {
+    setOpenCreateGenDialog(true);
+  };
+
+  const handleCloseCreateGenDialog = () => {
+    setOpenCreateGenDialog(false);
+  };
+
+  const handleOpenConfirmDialog = () => {
+    setOpenConfirmDialog(true);
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setOpenConfirmDialog(false);
+  };
+
+  const handleConfirmCreateGenograma = () => {
+    setOpenConfirmDialog(false);
+    setOpenCreateGenDialog(false);
+
+    console.log(nucleoFamData);
+    createFiguresFromData();
+  };
+
+  const createFiguresFromData = () => {
+    const xOffset = 100;
+    const yPosition0gen = 0;
+    const yPosition1gen = 100;
+    const yPosition2gen = 300;
+    const yPosition3gen = 500;
+    const yPosition4gen = 700;
+
+    let gen0Count = 0;
+    let gen1Count = 0;
+    let gen2Count = 0;
+    let gen3Count = 0;
+    let gen4Count = 0;
+    const newFigures = [];
+    const newActionHistory = [];
+
+    nucleoFamData.forEach((person, index) => {
+      if (person.genero === "Masculino") {
+        if (person.parentesco === "Abuelo") {
+          const x = xOffset + gen0Count * 150;
+          gen0Count++;
+
+          const newId = `rect${newFigures.length + 1}`;
+          const newRect = {
+            x: x,
+            y: yPosition0gen - 50,
+            width: 100,
+            height: 100,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: 4,
+            figure: "rectangle",
+            id: newId,
+          };
+          newFigures.push(newRect);
+          newActionHistory.push({ type: "add", target: "figure", id: newId });
+        } else if (person.parentesco === "Padre") {
+          const x = xOffset + gen1Count * 150;
+          gen1Count++;
+
+          const newId = `rect${newFigures.length + 1}`;
+          const newRect = {
+            x: x,
+            y: yPosition1gen - 50,
+            width: 100,
+            height: 100,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: 4,
+            figure: "rectangle",
+            id: newId,
+          };
+          newFigures.push(newRect);
+          newActionHistory.push({ type: "add", target: "figure", id: newId });
+        } else if (
+          person.parentesco === "Jefe de familia" ||
+          person.parentesco === "Hermano" ||
+          person.parentesco === "Esposo" ||
+          person.parentesco === "Cuñado"
+        ) {
+          const x = xOffset + gen2Count * 150;
+          gen2Count++;
+
+          const newId = `rect${newFigures.length + 1}`;
+          const newRect = {
+            x: x,
+            y: yPosition2gen - 50,
+            width: 100,
+            height: 100,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: 4,
+            figure: "rectangle",
+            id: newId,
+          };
+          newFigures.push(newRect);
+          newActionHistory.push({ type: "add", target: "figure", id: newId });
+        } else if (
+          person.parentesco === "Hijo" ||
+          person.parentesco === "Ahijado"
+        ) {
+          const x = xOffset + gen3Count * 150;
+          gen3Count++;
+
+          const newId = `rect${newFigures.length + 1}`;
+          const newRect = {
+            x: x,
+            y: yPosition3gen - 50,
+            width: 100,
+            height: 100,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: 4,
+            figure: "rectangle",
+            id: newId,
+          };
+          newFigures.push(newRect);
+          newActionHistory.push({ type: "add", target: "figure", id: newId });
+        } else if (person.parentesco === "Nieto") {
+          const x = xOffset + gen4Count * 150;
+          gen4Count++;
+
+          const newId = `rect${newFigures.length + 1}`;
+          const newRect = {
+            x: x,
+            y: yPosition4gen - 50,
+            width: 100,
+            height: 100,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: 4,
+            figure: "rectangle",
+            id: newId,
+          };
+          newFigures.push(newRect);
+          newActionHistory.push({ type: "add", target: "figure", id: newId });
+        }
+      } else if (person.genero === "Femenino") {
+        if (person.parentesco === "Abuela") {
+          const x = xOffset + gen0Count * 150;
+          gen0Count++;
+
+          const newId = `circle${newFigures.length + 1}`;
+          const newCircle = {
+            x: x + 50,
+            y: yPosition0gen,
+            radius: 50,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: 4,
+            figure: "circle",
+            id: newId,
+          };
+          newFigures.push(newCircle);
+          newActionHistory.push({ type: "add", target: "figure", id: newId });
+        } else if (person.parentesco === "Madre") {
+          const x = xOffset + gen1Count * 150;
+          gen1Count++;
+
+          const newId = `circle${newFigures.length + 1}`;
+          const newCircle = {
+            x: x + 50,
+            y: yPosition1gen,
+            radius: 50,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: 4,
+            figure: "circle",
+            id: newId,
+          };
+          newFigures.push(newCircle);
+          newActionHistory.push({ type: "add", target: "figure", id: newId });
+        } else if (
+          person.parentesco === "Esposa" ||
+          person.parentesco === "Hermana" ||
+          person.parentesco === "Cuñada"
+        ) {
+          const x = xOffset + gen2Count * 150;
+          gen2Count++;
+
+          const newId = `circle${newFigures.length + 1}`;
+          const newCircle = {
+            x: x + 50,
+            y: yPosition2gen,
+            radius: 50,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: 4,
+            figure: "circle",
+            id: newId,
+          };
+          newFigures.push(newCircle);
+          newActionHistory.push({ type: "add", target: "figure", id: newId });
+        } else if (
+          person.parentesco === "Hija" ||
+          person.parentesco === "Ahijada"
+        ) {
+          const x = xOffset + gen3Count * 150;
+          gen3Count++;
+
+          const newId = `circle${newFigures.length + 1}`;
+          const newCircle = {
+            x: x + 50,
+            y: yPosition3gen,
+            radius: 50,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: 4,
+            figure: "circle",
+            id: newId,
+          };
+          newFigures.push(newCircle);
+          newActionHistory.push({ type: "add", target: "figure", id: newId });
+        } else if (person.parentesco === "Nieta") {
+          const x = xOffset + gen4Count * 150;
+          gen4Count++;
+
+          const newId = `circle${newFigures.length + 1}`;
+          const newCircle = {
+            x: x + 50,
+            y: yPosition4gen,
+            radius: 50,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: 4,
+            figure: "circle",
+            id: newId,
+          };
+          newFigures.push(newCircle);
+          newActionHistory.push({ type: "add", target: "figure", id: newId });
+        }
+      }
+    });
+
+    setFigures((prevFigures) => [...prevFigures, ...newFigures]);
+    setActionHistory((prevActionHistory) => [
+      ...prevActionHistory,
+      ...newActionHistory,
+    ]);
+  };
+
   const actions = [
     {
       icon: <AddIcon />,
@@ -1390,6 +1638,12 @@ const Canvas = () => {
       icon: <PeopleAltIcon />,
       name: "Informacion de la familia",
       onClick: handleViewFamily,
+      color: "lightgreen",
+    },
+    {
+      icon: <AutoModeIcon />,
+      name: "Crear Genograma del Nucleo Familiar",
+      onClick: handleCreateGenDialog,
       color: "lightgreen",
     },
     {
@@ -1529,7 +1783,6 @@ const Canvas = () => {
                   <TableCell>Género</TableCell>
                   <TableCell>Estado Civil</TableCell>
                   <TableCell>Parentesco</TableCell>
-                  <TableCell>Pareja de</TableCell>
                   <TableCell>RUT</TableCell>
                 </TableRow>
               </TableHead>
@@ -1543,7 +1796,6 @@ const Canvas = () => {
                       <TableCell>{person.genero}</TableCell>
                       <TableCell>{person.ecivil}</TableCell>
                       <TableCell>{person.parentesco}</TableCell>
-                      <TableCell>{person.pareja}</TableCell>
                       <TableCell>{person.rut}</TableCell>
                     </TableRow>
                   ))}
@@ -1583,6 +1835,50 @@ const Canvas = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseFamDialog}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={openCreateGenDialog} onClose={handleCloseCreateGenDialog}>
+        <DialogContent>
+          <Typography>¿Qué acción deseas realizar?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpenConfirmDialog}
+          >
+            Crear Genograma del Núcleo Familiar
+          </Button>
+          <Button
+            onClick={handleCloseCreateGenDialog}
+            variant="contained"
+            color="secondary"
+          >
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={openConfirmDialog} onClose={handleCloseConfirmDialog}>
+        <DialogContent>
+          <Typography>
+            ¿Estás seguro de que deseas crear el genograma del núcleo familiar?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleConfirmCreateGenograma}
+          >
+            Sí
+          </Button>
+          <Button
+            onClick={handleCloseConfirmDialog}
+            variant="contained"
+            color="secondary"
+          >
+            No
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
