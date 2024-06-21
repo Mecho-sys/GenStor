@@ -58,6 +58,8 @@ const parentescoOptions = {
   ],
 };
 
+const servidorWeb = process.env.REACT_APP_PORT_SERVER;
+
 const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -76,13 +78,17 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/getFamilias");
+        const response = await axios.get(
+          `http://${servidorWeb}:4000/getFamilias`
+        );
         setFamiliasData(response.data.data);
       } catch (error) {
         console.error("Error al obtener los proyectos:", error);
       }
       try {
-        const response = await axios.get("http://localhost:4000/getPacientes");
+        const response = await axios.get(
+          `http://${servidorWeb}:4000/getPacientes`
+        );
         setPacientesData(response.data.data);
       } catch (error) {
         console.error("Error al obtener los proyectos:", error);
@@ -180,14 +186,14 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
       };
 
       const response = await axios.post(
-        "http://localhost:4000/addProyect",
+        `http://${servidorWeb}:4000/addProyect`,
         dataToSubmit
       );
       console.log("Respuesta del servidor:", response.data);
 
       if (response.status === 200) {
         const projectsResponse = await axios.get(
-          "http://localhost:4000/getProyects"
+          `http://${servidorWeb}:4000/getProyects`
         );
         const projects = projectsResponse.data.data;
         if (projects.length > 0) {
@@ -317,7 +323,7 @@ const CreationDialog = ({ isDialogOpen, setIsDialogOpen }) => {
             required
             fullWidth
             id="doctor"
-            label="Doctor/ra"
+            label="Profesional"
             name="doctor"
             autoComplete="doctor"
             autoFocus

@@ -34,7 +34,7 @@ const NewUser = ({ open, onClose }) => {
     console.log(dataToSend);
     /*
     axios
-      .post("http://localhost:8080/api/newUser", dataToSend, {
+      .post("http://${servidorWeb}:8080/api/newUser", dataToSend, {
         headers: {
           "Content-Type": "application/json",
         },

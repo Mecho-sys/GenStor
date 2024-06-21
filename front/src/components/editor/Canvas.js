@@ -39,6 +39,8 @@ import AutoModeIcon from "@mui/icons-material/AutoMode";
 import SidebarMenu from "./SideBarMenu";
 import KonvaStage from "./KonvaStage";
 
+const servidorWeb = process.env.REACT_APP_PORT_SERVER;
+
 const initialFigures = [];
 const initialText = [];
 const initialLines = [];
@@ -80,7 +82,9 @@ const Canvas = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/getProyects`);
+        const response = await axios.get(
+          `http://${servidorWeb}:4000/getProyects`
+        );
         const project = response.data.data.find(
           (p) => p.id.toString() === projectId.toString()
         );
@@ -1315,7 +1319,7 @@ const Canvas = () => {
   const handleSave = async () => {
     //const stageJson = stageRef.current.toJSON();
     try {
-      await axios.post(`http://localhost:4000/editProyect`, {
+      await axios.post(`http://${servidorWeb}:4000/editProyect`, {
         id: projectId,
         data: {
           figures: figures,

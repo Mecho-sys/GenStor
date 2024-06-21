@@ -17,6 +17,8 @@ import Dialog from "@mui/material/Dialog";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
+const servidorWeb = process.env.REACT_APP_PORT_SERVER;
+
 export default function GenGallery() {
   const [projects, setProjects] = useState([]);
   const [editingProject, setEditingProject] = useState(null);
@@ -26,10 +28,14 @@ export default function GenGallery() {
   const [editedDoctor, setEditedDoctor] = useState("");
   const navigate = useNavigate();
 
+  console.log(servidorWeb);
+
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/getProyects");
+        const response = await axios.get(
+          `http://${servidorWeb}:4000/getProyects`
+        );
         setProjects(response.data.data);
       } catch (error) {
         console.error("Error al obtener los proyectos:", error);
@@ -57,7 +63,7 @@ export default function GenGallery() {
 
   const handleEditProject = async () => {
     try {
-      await axios.post(`http://localhost:4000/editProyect`, {
+      await axios.post(`http://${servidorWeb}:4000/editProyect`, {
         id: editingProject.id,
         data: {
           name: editedName,
@@ -65,7 +71,9 @@ export default function GenGallery() {
           doctor: editedDoctor,
         },
       });
-      const response = await axios.get("http://localhost:4000/getProyects");
+      const response = await axios.get(
+        `http://${servidorWeb}:4000/getProyects`
+      );
       setProjects(response.data.data);
       handleDialogClose();
     } catch (error) {
@@ -75,10 +83,12 @@ export default function GenGallery() {
 
   const handleDeleteProject = async (projectId) => {
     try {
-      await axios.post(`http://localhost:4000/deleteProyect`, {
+      await axios.post(`http://${servidorWeb}:4000/deleteProyect`, {
         id: projectId,
       });
-      const response = await axios.get("http://localhost:4000/getProyects");
+      const response = await axios.get(
+        `http://${servidorWeb}:4000/getProyects`
+      );
       setProjects(response.data.data);
     } catch (error) {
       console.error("Error al eliminar el proyecto:", error);
@@ -113,7 +123,7 @@ export default function GenGallery() {
                     color="text.secondary"
                     component="div"
                   >
-                    Doctor: {project.doctor}
+                    Profesional: {project.doctor}
                   </Typography>
                 </CardContent>
                 <Box
